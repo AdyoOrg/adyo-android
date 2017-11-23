@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -37,8 +38,6 @@ import za.co.adyo.android.requests.PlacementRequestParams;
 public class AdyoZoneView extends FrameLayout {
 
     private int backgroundColor;
-    private PlacementRequestParams params;
-    private PlacementRequestListener listener;
     private int width = 0;
     private int height = 0;
     private Runnable layoutRunnable = null;
@@ -92,7 +91,6 @@ public class AdyoZoneView extends FrameLayout {
      */
     public void requestPlacement(final PlacementRequestParams params, final PlacementRequestListener placementRequestListener)
     {
-        this.params = params;
 
         //If the view has not het layed itself out and the params does not
         //specify a width/height, we need to place the call on hold until the layout is done.
@@ -110,7 +108,6 @@ public class AdyoZoneView extends FrameLayout {
         }
         else
         {
-            layoutRunnable = null;
 
             // Intercept params
             // The width and height of the view will be taken into account if no other values are specified
@@ -124,7 +121,7 @@ public class AdyoZoneView extends FrameLayout {
                 params.setHeight(height);
             }
 
-            this.listener = new PlacementRequestListener() {
+            final PlacementRequestListener listener = new PlacementRequestListener() {
                 @Override
                 public void onRequestComplete(boolean isFound, Placement placement) {
 
@@ -135,7 +132,7 @@ public class AdyoZoneView extends FrameLayout {
 
                     if(isFound)
                     {
-                        loadPlacement(placement);
+                        loadPlacement(placement, params, this);
                     }
                 }
 
@@ -159,7 +156,7 @@ public class AdyoZoneView extends FrameLayout {
     /**
      * @param placement the placement to be loaded into the view
      */
-    private void loadPlacement(final Placement placement) {
+    private void loadPlacement(final Placement placement, final PlacementRequestParams params, final PlacementRequestListener listener) {
 
         View view;
         if (placement.getCreativeType() == Placement.CREATIVE_TYPE_RICH_MEDIA) {
@@ -184,13 +181,17 @@ public class AdyoZoneView extends FrameLayout {
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
             settings.setDomStorageEnabled(true);
 
+
             AdyoZoneViewWebViewClient adyoWebClient = new AdyoZoneViewWebViewClient();
             webView.setWebViewClient(adyoWebClient);
             adyoWebClient.setBackgroundColor(backgroundColor);
-            adyoWebClient.setPlacement(placement);
+            adyoWebClient.setPlacement(placement, params, listener);
 
             setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
             setScrollbarFadingEnabled(true);
+            setVerticalScrollBarEnabled(false);
+            setHorizontalScrollBarEnabled(false);
+
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -201,6 +202,22 @@ public class AdyoZoneView extends FrameLayout {
             webView.setInitialScale(1);
 
             webView.loadUrl(placement.getCreativeUrl());
+
+            if(placement.getClickUrl() != null) {
+                webView.setOnTouchListener(new OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            Adyo.recordClicks(getContext(), placement);
+                            return true;
+                        }
+
+
+                        return false;
+                    }
+                });
+            }
 
 
         } else if (placement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
@@ -216,16 +233,19 @@ public class AdyoZoneView extends FrameLayout {
             requestLayout();
 
             Picasso.with(getContext()).load(placement.getCreativeUrl()).fit().centerInside().into(imageView, new Callback() {
+
                 @Override
                 public void onSuccess() {
                     Log.d("ADYO_ZONE_VIEW", "Loading creative finished");
-                    onCreativeLoaded(placement);
+                    onCreativeLoaded(placement, params, listener);
                 }
 
                 @Override
                 public void onError() {
                     Log.d("ADYO_ZONE_VIEW", "Loading creative failed");
                 }
+
+
             });
 
             //Only a creative of type IMAGE can be clicked on
@@ -257,7 +277,7 @@ public class AdyoZoneView extends FrameLayout {
         private String backgroundColor;
 
         AdyoZoneViewWebViewClient() {
-            super();
+            super(getContext());
         }
 
 
@@ -283,11 +303,11 @@ public class AdyoZoneView extends FrameLayout {
 
             //To set the background of the WebView we need to use javascript after the page is loaded
             String command = "javascript:(function() {" +
-                    "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + backgroundColor + "\";" +
+                        "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + backgroundColor + "\";" +
                     "})()";
             view.loadUrl(command);
 
-            onCreativeLoaded(placement);
+            onCreativeLoaded(placement, params, listener);
 
         }
     }
@@ -298,7 +318,7 @@ public class AdyoZoneView extends FrameLayout {
      *
      * @param placement placement being added to the AdyoZoneView
      */
-    private void onCreativeLoaded(Placement placement) {
+    private void onCreativeLoaded(Placement placement, PlacementRequestParams params, PlacementRequestListener listener) {
 
 
         //Log third party impression
@@ -325,6 +345,12 @@ public class AdyoZoneView extends FrameLayout {
             layoutRunnable = null;
         }
 
+    }
+
+
+    private interface PicassoCallback extends Callback {
+
+        void onSuccess(Placement placement);
     }
 
 

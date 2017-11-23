@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Adyo Android SDK</string>
+    <string name="filter_tool">Filter Tool</string>
+    <string name="adyo_zone_view">Adyo Zone View</string>
 </resources>

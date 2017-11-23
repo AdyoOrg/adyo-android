@@ -3,13 +3,17 @@ package za.co.adyo.android.requests;
 import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MediaType;
@@ -62,8 +66,8 @@ public class GetPlacementRequest extends AdyoRestRequest {
             body.put("network_id", params.getNetworkId());
             body.put("zone_id", params.getZoneId());
             body.put("user_id", params.getUserId());
-            if(params.getKeywords().length > 0)
-                body.put("keywords", params.getKeywords().toString());
+            List<String> stringList = new ArrayList<>(Arrays.asList(params.getKeywords()));
+            body.put("keywords", new JSONArray(stringList));
             if(params.getWidth() != null)
                 body.put("width", params.getWidth());
             if(params.getHeight() != null)

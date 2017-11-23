@@ -54,6 +54,7 @@ public class RecordImpressionRequest extends AdyoRestRequest {
         map.put("X-Adyo-Platform", context.getResources().getBoolean(R.bool.isTablet) ? "Tablet" : "Phone");
         map.put("X-Adyo-Model", getDeviceName());
         map.put("X-Adyo-OS-Version", String.valueOf(Build.VERSION.RELEASE));
+        map.put("X-Adyo-OS", "Android");
 
         return map;
     }

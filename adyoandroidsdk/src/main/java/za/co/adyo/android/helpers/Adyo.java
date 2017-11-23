@@ -27,12 +27,18 @@ import za.co.adyo.android.requests.RecordThirdPartyImpressionRequest;
 
 public class Adyo {
 
+    private static Handler handler;
+
     /**
      * @param params   parameters that will go into the request body
      * @param listener the listener will be called when request is completed or fails
      */
     public static void requestPlacement(final Context context, final PlacementRequestParams params, final PlacementRequestListener listener) {
 
+        if(handler == null)
+            handler = new Handler();
+        else
+            handler.removeCallbacksAndMessages(null);
 
         new GetPlacementRequest(params).execute(context, GetPlacementRequest.class.getName(), new AdyoRequestCallback() {
             @Override
@@ -196,7 +202,7 @@ public class Adyo {
 
         if(placement.getRefreshAfter() > 0) {
 
-            new Handler().postDelayed(
+            handler.postDelayed(
                     new RefreshRunnable(context, params, listener),
                     placement.getRefreshAfter() * 1000);
 

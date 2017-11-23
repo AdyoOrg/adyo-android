@@ -1,13 +1,16 @@
 package za.co.adyo.adyo.android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,10 +30,6 @@ import za.co.adyo.android.requests.PlacementRequestParams;
 
 public class FilterFragment extends BottomSheetDialogFragment {
 
-    private final static long NETWORK_ID = 13;
-    private final static long ZONE_ID_1 = 4;
-    private final static long ZONE_ID_2 = 5;
-
     private OnFilterListener listener;
     private EditText networkIdEdit;
     private EditText zoneIdEdit;
@@ -40,6 +39,9 @@ public class FilterFragment extends BottomSheetDialogFragment {
     private EditText heightEdit;
     private Button filterButton;
     private Button resetButton;
+
+    private float scale;
+    private PlacementRequestParams params;
 
     public static FilterFragment newInstance() {
 
@@ -71,6 +73,8 @@ public class FilterFragment extends BottomSheetDialogFragment {
         View contentView = View.inflate(getContext(), R.layout.fragment_filter, null);
         dialog.setContentView(contentView);
 
+        scale = getContext().getResources().getDisplayMetrics().density;
+
         networkIdEdit = contentView.findViewById(R.id.network_id_edit);
         zoneIdEdit = contentView.findViewById(R.id.zone_id_edit);
         userIdEdit = contentView.findViewById(R.id.user_id_edit);
@@ -80,7 +84,24 @@ public class FilterFragment extends BottomSheetDialogFragment {
         filterButton = contentView.findViewById(R.id.filter_button);
         resetButton = contentView.findViewById(R.id.reset_button);
 
-        resetFilters();
+        if(params == null) {
+            resetFilters();
+        }
+        else {
+
+            networkIdEdit.setText(String.valueOf(params.getNetworkId()));
+            zoneIdEdit.setText(String.valueOf(params.getZoneId()));
+            userIdEdit.setText(String.valueOf(params.getUserId() != null ? params.getUserId() : ""));
+
+            String joined = TextUtils.join(",", params.getKeywords());
+            keywordsEdit.setText(joined);
+
+            int width = Math.round(params.getWidth()/scale - 0.5f);
+            int height = Math.round(params.getHeight()/scale - 0.5f);
+
+            widthEdit.setText(String.valueOf(width));
+            heightEdit.setText(String.valueOf(height));
+        }
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,13 +114,53 @@ public class FilterFragment extends BottomSheetDialogFragment {
                     keywords = keywordsList.toArray(new String[keywordsList.size()]);
                 }
 
+                int width;
+                int height;
+                long networkId;
+                long zoneId;
+
+                try {
+
+                    width = Integer.valueOf(widthEdit.getText().toString());
+                    width = (int) (width * scale + 0.5f);
+                }
+                catch (Exception e)
+                {
+                   width = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+                }
+
+
+                try {
+                    height = Math.min(Integer.parseInt(heightEdit.getText().toString()), 400);
+                    height = (int) (height * scale + 0.5f);
+
+                }
+                catch (Exception e)
+                {
+                    height = 400;
+                }
+
+                try {
+
+                    networkId = Long.valueOf(networkIdEdit.getText().toString());
+                    zoneId = Long.valueOf(zoneIdEdit.getText().toString());
+
+                }
+                catch (Exception e)
+                {
+                    showErrorMessage();
+                    return;
+                }
+
+
                 PlacementRequestParams params = new PlacementRequestParams(getActivity(),
-                        Long.valueOf(networkIdEdit.getText().toString()),
-                        Long.valueOf(zoneIdEdit.getText().toString()),
+                        networkId,
+                        zoneId,
                         userIdEdit.getText().toString(),
                         keywords,
-                        Integer.valueOf(widthEdit.getText().toString()),
-                        Math.min(Integer.parseInt(heightEdit.getText().toString()), 400)
+                        width,
+                        height
                 );
 
                 listener.onFilter(params);
@@ -123,18 +184,36 @@ public class FilterFragment extends BottomSheetDialogFragment {
 
     }
 
+    private void showErrorMessage() {
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Warning")
+                .setMessage("The Network and Zone Ids are required")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        resetFilters();
+                    }
+                })
+                .show();
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        listener = (MainActivity)activity;
+        listener = (FilterActivity)activity;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        listener = (MainActivity)context;
+        listener = (FilterActivity)context;
+    }
+
+    public void setParams(PlacementRequestParams params) {
+        this.params = params;
     }
 
     public interface OnFilterListener {
@@ -145,13 +224,12 @@ public class FilterFragment extends BottomSheetDialogFragment {
 
     private void resetFilters()
     {
-        int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int heightPixels = 400;
+        int widthPixels = 300;
+        int heightPixels = 250;
 
-
-        networkIdEdit.setText(String.valueOf(NETWORK_ID));
-        zoneIdEdit.setText(String.valueOf(ZONE_ID_1));
-        userIdEdit.setText("YPf7G7BXtFCdEn");
+        networkIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_network_id)));
+        zoneIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_zone_id_1)));
+        userIdEdit.setText("");
         keywordsEdit.setText("");
         widthEdit.setText(String.valueOf(widthPixels));
         heightEdit.setText(String.valueOf(heightPixels));
