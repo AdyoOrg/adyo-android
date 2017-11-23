@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/transition/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="cddcd0fb93bc70e27325f2f715b2710332004ebb">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-transition-26.0.0-alpha1_0ef66ad7ca6ccb1ec24e1d8d95ca6b74088aa850.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/support-compat/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="8df0e365e40beb151bc42dee20817721a6cab7b0">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-support-compat-26.0.0-alpha1_6e27dba92b32ccf35eddabdb4cb5138a1709a4bc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="c4f45092eee6cdf1a5dbd597b2b6819be652ce2e">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-26.0.0-alpha1_e9bde49fbcc01f33484f55fe7283edffe02dd4cd.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.2/7446d06ec8d4f7ffcc53f1da37c95f200dcb9387/picasso-2.5.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/picasso-2.5.2_20f22725df8c346424c34a83686cbaca4555a38a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/support-core-ui/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="fcd01fd11233459f546c437ec927e9b61bf7caf1">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-support-core-ui-26.0.0-alpha1_c035e206b5b585cd62f053976d5dfdf4093f0508.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/support-v4/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-support-v4-26.0.0-alpha1_59db5e1811bf2dde27f7577d2da135c54747c4c4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.7.0/6edbebdd8868708db718d15c09c4b28037fd487e/okhttp-3.7.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="6edbebdd8868708db718d15c09c4b28037fd487e">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/okhttp-3.7.0_ce503c732716f5e0a2c530aa841f7393d31b15fe.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/support-core-utils/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="2e92aa0163544a804a0b34f169ca61801770839a">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-support-core-utils-26.0.0-alpha1_0223b2b4dfda90a2a164f8b39c8734b7a5f49b69.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="952944218ecedea1554a513dec0c14d570642843">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-26.0.0-alpha1_4874786c8eb592a3cc18dd34106e9fe05c125028.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/design/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="6a022bf00ccd0948a8180c505e8e458bbddd43a6">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-design-26.0.0-alpha1_70c137e1552c3bc19a6752269d4b574f309495a7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/support-media-compat/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="9935891f23923f39d002087085d9696568a9f657">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-support-media-compat-26.0.0-alpha1_23dbe6e59ca394c409fd35a86ce8528a8bcb0107.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="47471eb19df288158b00b8d9cfa41bce7373f5cc">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-26.0.0-alpha1_aa9e75b28c6815662b2bb80603c8f369f1570599.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/za.co.adyo/adyoandroidsdk/0.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="8bf30fdad485fe9b1fb3bc210f4c321417fcf90b">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/za.co.adyo-adyoandroidsdk-0.0.1_3a37e8f62f2f1c3211823485a461a56c9bf34d40.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.12.0/3742beff8024d0a0073d284b7c5e4cbf73d99b25/okio-1.12.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="3742beff8024d0a0073d284b7c5e4cbf73d99b25">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/okio-1.12.0_a052eb21c0d06d706602563910c2c770c2fe8d36.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="88246166d5afb106f532f6e6deae683c66b42c89">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-26.0.0-alpha1_724b646b3ee429f715f02f5a48f69698b3c530a0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/exploded-aar/com.android.support/support-fragment/26.0.0-alpha1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="18d31838aa4fcc768a8a0516e22cc13b94655d89">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/com.android.support-support-fragment-26.0.0-alpha1_ff6120cafd226c80d26e772b30a34a38e2e0c14d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marilie/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/26.0.0-alpha1/support-annotations-26.0.0-alpha1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="023ee503b631f69511e335a061ea008f8da60f40">
+        <dex dex="/Users/marilie/Documents/UnitX/Adyo/Android/AdyoAndroid/sample/build/intermediates/pre-dexed/debug/support-annotations-26.0.0-alpha1_fa67ba89c15338d02aa3a6f098b2734ffd20ebd8.jar" />
+    </item>
+
+</items>
