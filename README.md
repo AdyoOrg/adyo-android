@@ -17,7 +17,7 @@ Add this line to your app's `build.gradle` under `dependencies`:
 
 ```groovy
 dependencies {
-  compile 'za.co.adyo:adyoandroidsdk:1.0.0'
+  compile 'za.co.adyo:adyoandroidsdk:1.0.1'
 }
 ```
 
