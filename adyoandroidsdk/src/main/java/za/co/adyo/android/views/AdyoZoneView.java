@@ -37,13 +37,14 @@ import za.co.adyo.android.requests.PlacementRequestParams;
 
 public class AdyoZoneView extends FrameLayout {
 
-    private int backgroundColor;
+    private int backgroundColor = -1;
     private int width = 0;
     private int height = 0;
     private Runnable layoutRunnable = null;
 
     public AdyoZoneView(Context context) {
         super(context);
+        init(null);
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs) {
@@ -64,11 +65,13 @@ public class AdyoZoneView extends FrameLayout {
      */
     private void init(AttributeSet attrs) {
 
-        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.AdyoZoneView, 0, 0);
-        try {
-            backgroundColor = ta.getResourceId(R.styleable.AdyoZoneView_android_background, android.R.color.white);
-        } finally {
-            ta.recycle();
+        if(attrs != null) {
+            TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.AdyoZoneView, 0, 0);
+            try {
+                backgroundColor = ta.getResourceId(R.styleable.AdyoZoneView_android_background, android.R.color.white);
+            } finally {
+                ta.recycle();
+            }
         }
     }
 
@@ -283,7 +286,10 @@ public class AdyoZoneView extends FrameLayout {
 
         public void setBackgroundColor(int backgroundColor) {
 
-            this.backgroundColor = "#" + (Integer.toHexString(ContextCompat.getColor(getContext(), backgroundColor)).substring(2));
+            if(backgroundColor == -1)
+                this.backgroundColor = "#FFFFFF";
+            else
+                this.backgroundColor = "#" + (Integer.toHexString(ContextCompat.getColor(getContext(), backgroundColor)).substring(2));
 
         }
 
