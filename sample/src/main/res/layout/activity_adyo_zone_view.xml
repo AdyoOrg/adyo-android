@@ -27,7 +27,8 @@
         <za.co.adyo.android.views.AdyoZoneView
             android:id="@+id/adyo_zone_1"
             android:layout_width="200dp"
-            android:layout_height="125dp"/>
+            android:layout_height="125dp"
+            android:background="@android:color/white"/>
 
         <TextView
             android:layout_width="wrap_content"

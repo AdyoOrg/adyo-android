@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="adyo_network_id">13</integer>
-    <integer name="adyo_zone_id_1">11</integer>
-    <integer name="adyo_zone_id_2">12</integer>
+    <integer name="adyo_network_id">1</integer>
+    <integer name="adyo_zone_id_1">1</integer>
+    <integer name="adyo_zone_id_2">2</integer>
 </resources>

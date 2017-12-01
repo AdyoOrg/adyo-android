@@ -17,7 +17,7 @@ Add this line to your app's `build.gradle` under `dependencies`:
 
 ```groovy
 dependencies {
-  compile 'za.co.adyo:adyoandroidsdk:1.0.3'
+  compile 'za.co.adyo:adyoandroidsdk:1.0.4'
 }
 ```
 
@@ -308,6 +308,7 @@ If you have any feedback please feel free to email us at devops@unitx.co.za.
 - v1.0.1 - Redirect ad clicks to open in an external browser
 - v1.0.2 - Added support for .gif ads
 - v1.0.3 - Minor bug fixes
+- v1.0.4 - Gradle updates
 
 
 

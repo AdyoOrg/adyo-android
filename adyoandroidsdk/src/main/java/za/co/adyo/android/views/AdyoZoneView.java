@@ -1,11 +1,9 @@
 package za.co.adyo.android.views;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -15,7 +13,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
-import za.co.adyo.android.R;
 import za.co.adyo.android.helpers.Adyo;
 import za.co.adyo.android.helpers.AdyoWebViewClient;
 import za.co.adyo.android.listeners.PlacementRequestListener;
@@ -33,43 +30,22 @@ import za.co.adyo.android.requests.PlacementRequestParams;
 
 public class AdyoZoneView extends FrameLayout {
 
-    private int backgroundColor = -1;
     private int width = 0;
     private int height = 0;
     private Runnable layoutRunnable = null;
 
     public AdyoZoneView(Context context) {
         super(context);
-        init(null);
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
     }
 
-
-    /**
-     * Initialize AdyoZoneView
-     *
-     * @param attrs the attribute set used to get property values for the AdyoZoneView
-     */
-    private void init(AttributeSet attrs) {
-
-        if (attrs != null) {
-            TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.AdyoZoneView, 0, 0);
-            try {
-                backgroundColor = ta.getResourceId(R.styleable.AdyoZoneView_android_background, android.R.color.transparent);
-            } finally {
-                ta.recycle();
-            }
-        }
-    }
 
     /**
      * This will make a request to fetch a placement and if successful
@@ -155,6 +131,8 @@ public class AdyoZoneView extends FrameLayout {
         removeAllViews();
         addView(webView);
 
+        webView.setBackgroundColor(0x01000000);
+
 
         if (placement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
 
@@ -172,7 +150,6 @@ public class AdyoZoneView extends FrameLayout {
                     "padding: 0;" +
                     "font-size: 90%;" +
                     "line-height: 1.6;" +
-                    "background: none;" +
                     "-webkit-touch-callout: none;" +
                     "-webkit-user-select: none;" +
                     "}" +
@@ -185,7 +162,6 @@ public class AdyoZoneView extends FrameLayout {
                     "margin: auto;" +
                     "max-width: 100%;" +
                     "max-height: 100%;" +
-                    "background: none;" +
                     "}" +
                     "</style>" +
                     "</head>" +
@@ -238,7 +214,6 @@ public class AdyoZoneView extends FrameLayout {
 
         AdyoZoneViewWebViewClient adyoWebClient = new AdyoZoneViewWebViewClient();
         webView.setWebViewClient(adyoWebClient);
-        adyoWebClient.setBackgroundColor(backgroundColor);
         adyoWebClient.setPlacement(placement, params, listener);
 
 
@@ -265,17 +240,6 @@ public class AdyoZoneView extends FrameLayout {
         }
 
 
-        public void setBackgroundColor(int backgroundColor) {
-
-
-            if (backgroundColor == -1)
-                this.backgroundColor = "#FFFFFF";
-            else {
-                this.backgroundColor = "#" + (Integer.toHexString(ResourcesCompat.getColor(getResources(), backgroundColor, null)));
-
-            }
-        }
-
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
@@ -291,11 +255,8 @@ public class AdyoZoneView extends FrameLayout {
             Log.d("ADYO_ZONE_VIEW", "Loading creative finished");
 
             //To set the background of the WebView we need to use javascript after the page is loaded
-            String command = "javascript:(function() {";
-
-            if (placement.getClickUrl() != null)
-                command += "window.onClick= function()\n" +
-                        "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + backgroundColor + "\";" +
+            String command = "javascript:(function() {" +
+                       // "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + backgroundColor + "\";" +
                         "})()";
             view.loadUrl(command);
 
