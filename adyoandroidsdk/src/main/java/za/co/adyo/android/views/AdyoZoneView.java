@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -61,10 +61,10 @@ public class AdyoZoneView extends FrameLayout {
      */
     private void init(AttributeSet attrs) {
 
-        if(attrs != null) {
+        if (attrs != null) {
             TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.AdyoZoneView, 0, 0);
             try {
-                backgroundColor = ta.getResourceId(R.styleable.AdyoZoneView_android_background, android.R.color.white);
+                backgroundColor = ta.getResourceId(R.styleable.AdyoZoneView_android_background, android.R.color.transparent);
             } finally {
                 ta.recycle();
             }
@@ -74,10 +74,10 @@ public class AdyoZoneView extends FrameLayout {
     /**
      * This will make a request to fetch a placement and if successful
      * load it into the AdyoZoneView
+     *
      * @param params the params used to make the request
      */
-    public void requestPlacement(final PlacementRequestParams params)
-    {
+    public void requestPlacement(final PlacementRequestParams params) {
         requestPlacement(params, null);
     }
 
@@ -85,18 +85,16 @@ public class AdyoZoneView extends FrameLayout {
     /**
      * This will make a request to fetch a placement and if successful
      * load it into the AdyoZoneView
-     * @param params the params used to make the request
+     *
+     * @param params                   the params used to make the request
      * @param placementRequestListener the listener called when a placement has been requested
      */
-    public void requestPlacement(final PlacementRequestParams params, final PlacementRequestListener placementRequestListener)
-    {
+    public void requestPlacement(final PlacementRequestParams params, final PlacementRequestListener placementRequestListener) {
 
         //If the view has not het layed itself out and the params does not
         //specify a width/height, we need to place the call on hold until the layout is done.
-        if( (width == 0 && params.getWidth() == null) || (height == 0 && params.getHeight() == null) )
-        {
-            layoutRunnable = new Runnable()
-            {
+        if ((width == 0 && params.getWidth() == null) || (height == 0 && params.getHeight() == null)) {
+            layoutRunnable = new Runnable() {
 
                 @Override
                 public void run() {
@@ -104,19 +102,15 @@ public class AdyoZoneView extends FrameLayout {
                 }
             };
 
-        }
-        else
-        {
+        } else {
 
             // Intercept params
             // The width and height of the view will be taken into account if no other values are specified
-            if(params.getWidth() == null)
-            {
+            if (params.getWidth() == null) {
                 params.setWidth(width);
             }
 
-            if(params.getHeight() == null)
-            {
+            if (params.getHeight() == null) {
                 params.setHeight(height);
             }
 
@@ -124,13 +118,11 @@ public class AdyoZoneView extends FrameLayout {
                 @Override
                 public void onRequestComplete(boolean isFound, Placement placement) {
 
-                    if(placementRequestListener != null)
-                    {
+                    if (placementRequestListener != null) {
                         placementRequestListener.onRequestComplete(isFound, placement);
                     }
 
-                    if(isFound)
-                    {
+                    if (isFound) {
                         loadPlacement(placement, params, this);
                     }
                 }
@@ -138,8 +130,7 @@ public class AdyoZoneView extends FrameLayout {
                 @Override
                 public void onRequestError(String error) {
 
-                    if(placementRequestListener != null)
-                    {
+                    if (placementRequestListener != null) {
                         placementRequestListener.onRequestError(error);
                     }
                 }
@@ -165,47 +156,46 @@ public class AdyoZoneView extends FrameLayout {
         addView(webView);
 
 
-       if (placement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
+        if (placement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
 
             //The AdyoZone becomes a ImageView to handle Images
 
             String url = "<!DOCTYPE html>" +
-           "<html>" +
-           "<head>" +
-           "<meta charset=\"UTF-8\">" +
-           "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
-           "<style type=\"text/css\">" +
-           "html{margin:0;padding:0;}" +
-           "body {" +
-           "margin: 0;" +
-           "padding: 0;" +
-           "font-size: 90%;" +
-           "line-height: 1.6;" +
-           "background: none;" +
-           "-webkit-touch-callout: none;" +
-           "-webkit-user-select: none;" +
-           "}" +
-           "img {" +
-           "position: absolute;" +
-           "top: 0;" +
-           "bottom: 0;" +
-           "left: 0;" +
-           "right: 0;" +
-           "margin: auto;" +
-           "max-width: 100%;" +
-           "max-height: 100%;" +
-           "background: none;" +
-           "}" +
-           "</style>" +
-           "</head>" +
-           "<body id=\"page\">" +
-           "<img src='" + placement.getCreativeUrl() + "'/>" +
-           "</body></html>";
+                    "<html>" +
+                    "<head>" +
+                    "<meta charset=\"UTF-8\">" +
+                    "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
+                    "<style type=\"text/css\">" +
+                    "html{margin:0;padding:0;}" +
+                    "body {" +
+                    "margin: 0;" +
+                    "padding: 0;" +
+                    "font-size: 90%;" +
+                    "line-height: 1.6;" +
+                    "background: none;" +
+                    "-webkit-touch-callout: none;" +
+                    "-webkit-user-select: none;" +
+                    "}" +
+                    "img {" +
+                    "position: absolute;" +
+                    "top: 0;" +
+                    "bottom: 0;" +
+                    "left: 0;" +
+                    "right: 0;" +
+                    "margin: auto;" +
+                    "max-width: 100%;" +
+                    "max-height: 100%;" +
+                    "background: none;" +
+                    "}" +
+                    "</style>" +
+                    "</head>" +
+                    "<body id=\"page\">" +
+                    "<img src='" + placement.getCreativeUrl() + "'/>" +
+                    "</body></html>";
 
-           webView.loadData(url, "text/html; charset=UTF-8", null);
+            webView.loadData(url, "text/html; charset=UTF-8", null);
 
-        }
-        else {
+        } else {
 
             //The AdyoZone becomes a WebView to handle Rich Media
             WebSettings settings = webView.getSettings();
@@ -232,11 +222,11 @@ public class AdyoZoneView extends FrameLayout {
 
             webView.setInitialScale(1);
 
-           webView.loadUrl(placement.getCreativeUrl());
+            webView.loadUrl(placement.getCreativeUrl());
 
         }
 
-        if(placement.getClickUrl() != null) {
+        if (placement.getClickUrl() != null) {
 
             setOnClickListener(new OnClickListener() {
                 @Override
@@ -252,12 +242,10 @@ public class AdyoZoneView extends FrameLayout {
         adyoWebClient.setPlacement(placement, params, listener);
 
 
-
-
     }
 
     /**
-     *  Clears the ad in the view
+     * Clears the ad in the view
      */
     public void clearView() {
         removeAllViews();
@@ -279,11 +267,13 @@ public class AdyoZoneView extends FrameLayout {
 
         public void setBackgroundColor(int backgroundColor) {
 
-            if(backgroundColor == -1)
-                this.backgroundColor = "#FFFFFF";
-            else
-                this.backgroundColor = "#" + (Integer.toHexString(ContextCompat.getColor(getContext(), backgroundColor)).substring(2));
 
+            if (backgroundColor == -1)
+                this.backgroundColor = "#FFFFFF";
+            else {
+                this.backgroundColor = "#" + (Integer.toHexString(ResourcesCompat.getColor(getResources(), backgroundColor, null)));
+
+            }
         }
 
         @Override
@@ -303,10 +293,10 @@ public class AdyoZoneView extends FrameLayout {
             //To set the background of the WebView we need to use javascript after the page is loaded
             String command = "javascript:(function() {";
 
-            if(placement.getClickUrl() != null)
+            if (placement.getClickUrl() != null)
                 command += "window.onClick= function()\n" +
                         "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + backgroundColor + "\";" +
-                    "})()";
+                        "})()";
             view.loadUrl(command);
 
             onCreativeLoaded(placement, params, listener);
@@ -341,8 +331,7 @@ public class AdyoZoneView extends FrameLayout {
         width = MeasureSpec.getSize(widthMeasureSpec);
         height = MeasureSpec.getSize(heightMeasureSpec);
 
-        if(layoutRunnable != null)
-        {
+        if (layoutRunnable != null) {
             new Handler().post(layoutRunnable);
             layoutRunnable = null;
         }
@@ -353,8 +342,7 @@ public class AdyoZoneView extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 
-        if(hasOnClickListeners())
-        {
+        if (hasOnClickListeners()) {
             return true;
         }
 
