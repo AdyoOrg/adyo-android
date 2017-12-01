@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.0.1"
+version = "1.0.2"
 
 android {
     compileSdkVersion 26
@@ -12,7 +12,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0.1"
+        versionName "1.0.2"
 
     }
     buildTypes {
@@ -67,7 +67,6 @@ install {
 dependencies {
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     compile 'com.squareup.okhttp3:okhttp:3.7.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
 

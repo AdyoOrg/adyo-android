@@ -14,10 +14,6 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import za.co.adyo.android.R;
 import za.co.adyo.android.helpers.Adyo;
@@ -161,19 +157,57 @@ public class AdyoZoneView extends FrameLayout {
      */
     private void loadPlacement(final Placement placement, final PlacementRequestParams params, final PlacementRequestListener listener) {
 
-        View view;
-        if (placement.getCreativeType() == Placement.CREATIVE_TYPE_RICH_MEDIA) {
+        WebView webView = new WebView(getContext());
+        webView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        removeAllViews();
+        addView(webView);
+
+
+       if (placement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
+
+            //The AdyoZone becomes a ImageView to handle Images
+
+            String url = "<!DOCTYPE html>" +
+           "<html>" +
+           "<head>" +
+           "<meta charset=\"UTF-8\">" +
+           "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
+           "<style type=\"text/css\">" +
+           "html{margin:0;padding:0;}" +
+           "body {" +
+           "margin: 0;" +
+           "padding: 0;" +
+           "font-size: 90%;" +
+           "line-height: 1.6;" +
+           "background: none;" +
+           "-webkit-touch-callout: none;" +
+           "-webkit-user-select: none;" +
+           "}" +
+           "img {" +
+           "position: absolute;" +
+           "top: 0;" +
+           "bottom: 0;" +
+           "left: 0;" +
+           "right: 0;" +
+           "margin: auto;" +
+           "max-width: 100%;" +
+           "max-height: 100%;" +
+           "background: none;" +
+           "}" +
+           "</style>" +
+           "</head>" +
+           "<body id=\"page\">" +
+           "<img src='" + placement.getCreativeUrl() + "'/>" +
+           "</body></html>";
+
+           webView.loadData(url, "text/html; charset=UTF-8", null);
+
+        }
+        else {
 
             //The AdyoZone becomes a WebView to handle Rich Media
-            view = new WebView(getContext());
-            view.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            removeAllViews();
-            addView(view);
-            requestLayout();
-
-            WebView webView = (WebView) view;
             WebSettings settings = webView.getSettings();
             settings.setJavaScriptEnabled(true);
             settings.setLoadWithOverviewMode(true);
@@ -183,12 +217,6 @@ public class AdyoZoneView extends FrameLayout {
             settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
             settings.setDomStorageEnabled(true);
-
-
-            AdyoZoneViewWebViewClient adyoWebClient = new AdyoZoneViewWebViewClient();
-            webView.setWebViewClient(adyoWebClient);
-            adyoWebClient.setBackgroundColor(backgroundColor);
-            adyoWebClient.setPlacement(placement, params, listener);
 
             setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
             setScrollbarFadingEnabled(true);
@@ -204,62 +232,27 @@ public class AdyoZoneView extends FrameLayout {
 
             webView.setInitialScale(1);
 
-            webView.loadUrl(placement.getCreativeUrl());
+           webView.loadUrl(placement.getCreativeUrl());
 
-            if(placement.getClickUrl() != null) {
-                webView.setOnTouchListener(new OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
+        }
 
-                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                            Adyo.recordClicks(getContext(), placement);
-                            return true;
-                        }
+        if(placement.getClickUrl() != null) {
 
-
-                        return false;
-                    }
-                });
-            }
-
-
-        } else if (placement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
-
-            //The AdyoZone becomes a ImageView to handle Images
-            view = new ImageView(getContext());
-            view.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            removeAllViews();
-            addView(view);
-            ImageView imageView = (ImageView) view;
-            requestLayout();
-
-            Picasso.with(getContext()).load(placement.getCreativeUrl()).fit().centerInside().into(imageView, new Callback() {
-
-                @Override
-                public void onSuccess() {
-                    Log.d("ADYO_ZONE_VIEW", "Loading creative finished");
-                    onCreativeLoaded(placement, params, listener);
-                }
-
-                @Override
-                public void onError() {
-                    Log.d("ADYO_ZONE_VIEW", "Loading creative failed");
-                }
-
-
-            });
-
-            //Only a creative of type IMAGE can be clicked on
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Adyo.recordClicks(getContext(), placement);
                 }
             });
-
         }
+
+        AdyoZoneViewWebViewClient adyoWebClient = new AdyoZoneViewWebViewClient();
+        webView.setWebViewClient(adyoWebClient);
+        adyoWebClient.setBackgroundColor(backgroundColor);
+        adyoWebClient.setPlacement(placement, params, listener);
+
+
+
 
     }
 
@@ -308,7 +301,10 @@ public class AdyoZoneView extends FrameLayout {
             Log.d("ADYO_ZONE_VIEW", "Loading creative finished");
 
             //To set the background of the WebView we need to use javascript after the page is loaded
-            String command = "javascript:(function() {" +
+            String command = "javascript:(function() {";
+
+            if(placement.getClickUrl() != null)
+                command += "window.onClick= function()\n" +
                         "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + backgroundColor + "\";" +
                     "})()";
             view.loadUrl(command);
@@ -354,10 +350,14 @@ public class AdyoZoneView extends FrameLayout {
     }
 
 
-    private interface PicassoCallback extends Callback {
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
 
-        void onSuccess(Placement placement);
+        if(hasOnClickListeners())
+        {
+            return true;
+        }
+
+        return super.onInterceptTouchEvent(ev);
     }
-
-
 }

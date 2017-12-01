@@ -58,7 +58,6 @@ public abstract class AdyoWebViewClient extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         String url=request.getUrl().toString();
         if (!placement.getCreativeUrl().equals(url)) {
-
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             context.startActivity(i);
