@@ -1,10 +1,13 @@
 package za.co.adyo.android.helpers;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.util.Log;
 
 import za.co.adyo.android.listeners.ImpressionRequestListener;
@@ -16,6 +19,8 @@ import za.co.adyo.android.requests.GetPlacementRequest;
 import za.co.adyo.android.requests.PlacementRequestParams;
 import za.co.adyo.android.requests.RecordImpressionRequest;
 import za.co.adyo.android.requests.RecordThirdPartyImpressionRequest;
+import za.co.adyo.android.views.AdyoPopupView;
+import za.co.adyo.android.views.AdyoWebInsideActivity;
 
 /**
  * Adyo
@@ -182,9 +187,24 @@ public class Adyo {
 
         if (placement.getClickUrl() != null) {
 
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(placement.getClickUrl()));
-            context.startActivity(i);
+            if(placement.getAppTarget() == Placement.APP_TARGET_POPUP) {
+
+               Adyo.showAlertDialog(((Activity)context).getFragmentManager(), placement.getClickUrl());
+
+            }
+            else if (placement.getAppTarget() == Placement.APP_TARGET_POPUP)
+            {
+                Intent i = new Intent(context, AdyoWebInsideActivity.class);
+                i.putExtra("url", placement.getClickUrl());
+                context.startActivity(i);
+
+            }
+            else
+            {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(placement.getClickUrl()));
+                context.startActivity(i);
+            }
             Log.d("ADYO", "Placement click recorded");
         }
 
@@ -209,6 +229,17 @@ public class Adyo {
             Log.d("ADYO", "Placement will be refreshed in " + placement.getRefreshAfter() + "seconds");
         }
 
+    }
+
+    public static void showAlertDialog(FragmentManager fm, String url, @StyleRes int theme) {
+
+        AdyoPopupView alertDialog = AdyoPopupView.newInstance(url, theme);
+        alertDialog.show(fm, "fragment_alert");
+    }
+
+    public static void showAlertDialog(FragmentManager fm, String url) {
+        AdyoPopupView alertDialog = AdyoPopupView.newInstance(url);
+        alertDialog.show(fm, "fragment_alert");
     }
 
 

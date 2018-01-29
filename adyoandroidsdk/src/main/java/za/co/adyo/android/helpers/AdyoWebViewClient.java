@@ -45,9 +45,11 @@ public abstract class AdyoWebViewClient extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         if (!placement.getCreativeUrl().equals(url)) {
 
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            context.startActivity(i);
+            if(placement.getAppTarget() == Placement.APP_TARGET_DEFAULT) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                context.startActivity(i);
+            }
             return true;
         }
         return false;
@@ -58,9 +60,13 @@ public abstract class AdyoWebViewClient extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         String url=request.getUrl().toString();
         if (!placement.getCreativeUrl().equals(url)) {
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            context.startActivity(i);
+
+            if(placement.getAppTarget() == Placement.APP_TARGET_DEFAULT) {
+
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                context.startActivity(i);
+            }
             return true;
         }
         return false;

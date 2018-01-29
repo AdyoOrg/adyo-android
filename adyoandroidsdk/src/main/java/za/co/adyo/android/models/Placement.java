@@ -16,6 +16,10 @@ public class Placement {
     public static final int CREATIVE_TYPE_IMAGE = 1;
     public static final int CREATIVE_TYPE_RICH_MEDIA = 2;
 
+    public static final int APP_TARGET_DEFAULT = 11;
+    public static final int APP_TARGET_INSIDE = 12;
+    public static final int APP_TARGET_POPUP = 13;
+
     private String creativeUrl;
     private int creativeType;
     private String impressionUrl;
@@ -24,9 +28,10 @@ public class Placement {
     @Nullable
     private String thirdPartyImpressionUrl;
     private int refreshAfter;
+    private int appTarget;
 
     public Placement(String creativeUrl, String creativeType, String impressionUrl,
-                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter) {
+                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget) {
 
         this.creativeUrl = creativeUrl;
 
@@ -45,6 +50,19 @@ public class Placement {
         this.clickUrl = clickUrl;
         this.thirdPartyImpressionUrl = thirdPartyImpressionUrl;
         this.refreshAfter = refreshAfter;
+
+        // Used to determine how the click url will be displayed
+        switch (appTarget) {
+            case "popup":
+                this.appTarget = APP_TARGET_POPUP;
+                break;
+            case "inside":
+                this.appTarget = APP_TARGET_INSIDE;
+                break;
+            default:
+                this.appTarget = APP_TARGET_DEFAULT;
+                break;
+        }
     }
 
     /**
@@ -131,5 +149,20 @@ public class Placement {
      */
     public void setRefreshAfter(int refreshAfter) {
         this.refreshAfter = refreshAfter;
+    }
+
+    /**
+     * @return  app target enum
+     */
+    public int getAppTarget() {
+        return appTarget;
+    }
+
+    /**
+     *
+     * @param appTarget app target enum
+     */
+    public void setAppTarget(int appTarget) {
+        this.appTarget = appTarget;
     }
 }

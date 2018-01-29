@@ -17,7 +17,7 @@ Add this line to your app's `build.gradle` under `dependencies`:
 
 ```groovy
 dependencies {
-  compile 'za.co.adyo:adyoandroidsdk:1.0.4'
+  compile 'za.co.adyo:adyoandroidsdk:1.0.5'
 }
 ```
 
@@ -60,7 +60,9 @@ PlacementRequestParams params = new PlacementRequestParams(
                 "YPf7G7BXtFCdEn",     // User Id (Nullable)
                 new String[0],        // List of Keywords (Nullable)
                 320,                  // Width (Nullable)
-                200);                 // Height (Nullable)
+                200,                  // Height (Nullable)
+                new JSONObject());    // Custom Keyword (Nullable)
+                
 ```
 We will discuss the `PlacementRequestParams` in full shortly.
 
@@ -100,7 +102,8 @@ PlacementRequestParams params = new PlacementRequestParams(
                 "YPf7G7BXtFCdEn",     // User Id (Nullable)
                 new String[0],        // List of Keywords (Nullable)
                 320,                  // Width (Nullable)
-                200);                 // Height (Nullable)
+                200,                  // Height (Nullable)
+                new JSONObject());    // Custom Keyword (Nullable)
 ```
 We will discuss the `PlacementRequestParams` in full shortly.
 
@@ -170,7 +173,7 @@ This helper class is provided to simplify placement requests.
 | --- | --- |
 | `void requestPlacement(Context, PlacementRequestParams, PlacementRequestListener)` | Gets a single placement that fits the parameters' criteria.  |
 | `void recordImpression(Context, Placement, @Nullable ImpressionRequestListener)` | GET request to  the placement's impression URL to record an impression. It will also record the third party impression if the placement contains such a URL. |
-| `void recordClicks(Context, Placement)` | GET request to the placement's click URL if such a URL exists. |
+| `void recordClicks(Context, Placement)` | GET request to the placement's click URL if such a URL exists. Also determines how to display page based on api.|
 | `void refreshPlacement(Context, Placement, PlacementRequestParams, PlacementRequestListener)` | Refreshes the accepted placement after the time specified by the placement's `refreshAfter` property.
 
 **Note:** The Adyo analytics API automatically detects duplicate impression requests so you don't have to worry if you are calling the `recordImpression` method more than once (e.g When the third party impression URL request has failed and you would like to try again).
@@ -189,6 +192,7 @@ The parameters consist of the following:
 | `keywords` | Nullable String [] | A list of keywords associated with the placement. |
 | `width` | Nullable Integer | Width of the zone. |
 | `height` | Nullable Integer | Height of the zone. |
+| `customKeywords` | Nullable JSONObject | Key value pairs of custom keywords. |
 
 A `PlacementRequestParams` can be created as follows:
 
@@ -200,7 +204,8 @@ A `PlacementRequestParams` can be created as follows:
                 "YPf7G7BXtFCdEn",          // User Id (Nullable)
                 new String[0],             // List of Keywords (Nullable)
                 null,                      // Width (Nullable)
-                null);                     // Height (Nullable)
+                200,                       // Height (Nullable)
+                new JSONObject());         // Custom Keyword (Nullable)
 ```
 
 
@@ -249,6 +254,7 @@ An object that models a placement and its properties.
 | `clickURL` | Nullable String  | The URL to be used when the ad is clicked on. |
 | `thirdPartyImpressionURL` | Nullable String | The URL to be used to record a third party impression. |
 | `refreshAfter` | int | The time to wait before refreshing the placement in seconds. |
+| `appTarget` | int | Determines how the click URL will be handled. Currently we support the following: `APP_TARGET_DEFAULT` = External browser, `APP_TARGET_INSIDE` = Inside app, `APP_TARGET_POPUP` = Popup. |
 
 ### AdyoWebViewClient
 
@@ -309,6 +315,7 @@ If you have any feedback please feel free to email us at devops@unitx.co.za.
 - v1.0.2 - Added support for .gif ads
 - v1.0.3 - Minor bug fixes
 - v1.0.4 - Gradle updates
+- v1.0.5 - Custom Keyword support. Handling of Click URL destination.
 
 
 

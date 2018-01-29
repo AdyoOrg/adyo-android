@@ -1,5 +1,6 @@
 package za.co.adyo.adyo.android;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -45,33 +46,43 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
         adyoZoneView = (AdyoZoneView) findViewById(R.id.adyo_zone_view);
 
 
-        //Create a new parameter holder
-        PlacementRequestParams params = new PlacementRequestParams(
-                FilterActivity.this,                                      // Context
-                getResources().getInteger(R.integer.adyo_network_id),   // Network Id
-                getResources().getInteger(R.integer.adyo_zone_id_2),    // Zone Id
-                null,                                                   // User Id (Can be Null)
-                new String[0],                                          // List of Keywords
-                null,                                                   // Width
-                null);                                                  // Height
+//        //Create a new parameter holder
+//        PlacementRequestParams params = new PlacementRequestParams(
+//                FilterActivity.this,                                      // Context
+//                getResources().getInteger(R.integer.adyo_network_id),   // Network Id
+//                getResources().getInteger(R.integer.adyo_zone_id_2),    // Zone Id
+//                null,                                                   // User Id (Can be Null)
+//                new String[0],                                          // List of Keywords
+//                null,                                                   // Width
+//                null,
+//                null);// Height
+//
 
-        adyoZoneView.requestPlacement(params, new PlacementRequestListener() {
-            @Override
-            public void onRequestComplete(boolean isFound, Placement placement) {
-                if(!isFound)
-                {
-                    new AlertDialog.Builder(FilterActivity.this)
-                            .setTitle("No Placement Found")
-                            .setMessage("Please adjust the filters and try again")
-                            .show();
-                }
-            }
+        if(savedInstanceState == null) {
+            filterButton.performClick();
+        }
+        else {
+            params = savedInstanceState.getParcelable("params");
+            onFilter(params);
+        }
 
-            @Override
-            public void onRequestError(String error) {
-
-            }
-        });
+//        adyoZoneView.requestPlacement(params, new PlacementRequestListener() {
+//            @Override
+//            public void onRequestComplete(boolean isFound, Placement placement) {
+//                if(!isFound)
+//                {
+//                    new AlertDialog.Builder(FilterActivity.this)
+//                            .setTitle("No Placement Found")
+//                            .setMessage("Please adjust the filters and try again")
+//                            .show();
+//                }
+//            }
+//
+//            @Override
+//            public void onRequestError(String error) {
+//
+//            }
+//        });
 
     }
 
@@ -80,7 +91,8 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
 
         this.params = params;
 
-        bottomSheetDialogFragment.dismiss();
+        if(bottomSheetDialogFragment != null)
+            bottomSheetDialogFragment.dismiss();
 
         adyoZoneView.getLayoutParams().width = params.getWidth();
         adyoZoneView.getLayoutParams().height = params.getHeight();
@@ -112,4 +124,15 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
         });
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("params", params);
+        super.onSaveInstanceState(outState);
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
 }

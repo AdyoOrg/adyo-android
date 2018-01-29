@@ -73,6 +73,9 @@ public class GetPlacementRequest extends AdyoRestRequest {
             if(params.getHeight() != null)
                 body.put("height", params.getHeight());
 
+            if(params.getCustomKeywords() != null)
+                body.put("custom", params.getCustomKeywords());
+
             array =  body.toString().getBytes("UTF-8");
         } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();

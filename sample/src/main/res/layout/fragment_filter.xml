@@ -17,10 +17,10 @@
 
             <EditText
                 android:id="@+id/network_id_edit"
-                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Network ID" />
+                android:hint="Network ID"
+                android:inputType="number" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -31,10 +31,10 @@
 
             <EditText
                 android:id="@+id/zone_id_edit"
-                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Zone ID" />
+                android:hint="Zone ID"
+                android:inputType="number" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -71,10 +71,10 @@
 
             <EditText
                 android:id="@+id/width_edit"
-                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Width (dp)" />
+                android:hint="Width (dp)"
+                android:inputType="number" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -85,32 +85,63 @@
 
             <EditText
                 android:id="@+id/height_edit"
-                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Height (dp)" />
+                android:hint="Height (dp)"
+                android:inputType="number" />
 
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/filter_button"
-            android:layout_marginTop="10dp"
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Custom Keywords" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Filter"
+            android:background="@drawable/container_border"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/ckw_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/ckw_add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:background="@drawable/primary_button"
+                android:text="Add"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/filter_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
-            />
+            android:text="Request"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/reset_button"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reset"
+            android:layout_marginTop="10dp"
             android:background="@color/colorAccent"
-            android:textColor="@android:color/white"
-            />
+            android:text="Reset"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
