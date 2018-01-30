@@ -1,5 +1,6 @@
 package za.co.adyo.android.views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -58,8 +59,8 @@ public class AdyoZoneView extends FrameLayout {
      *
      * @param params the params used to make the request
      */
-    public void requestPlacement(final PlacementRequestParams params) {
-        requestPlacement(params, null);
+    public void requestPlacement(Activity activity, final PlacementRequestParams params) {
+        requestPlacement(activity, params, null);
     }
 
 
@@ -70,7 +71,7 @@ public class AdyoZoneView extends FrameLayout {
      * @param params                   the params used to make the request
      * @param placementRequestListener the listener called when a placement has been requested
      */
-    public void requestPlacement(final PlacementRequestParams params, final PlacementRequestListener placementRequestListener) {
+    public void requestPlacement(final Activity activity, final PlacementRequestParams params, final PlacementRequestListener placementRequestListener) {
 
         //If the view has not het layed itself out and the params does not
         //specify a width/height, we need to place the call on hold until the layout is done.
@@ -79,7 +80,7 @@ public class AdyoZoneView extends FrameLayout {
 
                 @Override
                 public void run() {
-                    requestPlacement(params, placementRequestListener);
+                    requestPlacement(activity, params, placementRequestListener);
                 }
             };
 
@@ -104,7 +105,7 @@ public class AdyoZoneView extends FrameLayout {
                     }
 
                     if (isFound) {
-                        loadPlacement(placement, params, this);
+                        loadPlacement(activity, placement, params, this);
                     }
                 }
 
@@ -117,7 +118,7 @@ public class AdyoZoneView extends FrameLayout {
                 }
             };
 
-            Adyo.requestPlacement(context, params, listener);
+            Adyo.requestPlacement(activity, params, listener);
         }
 
 
@@ -127,7 +128,7 @@ public class AdyoZoneView extends FrameLayout {
     /**
      * @param placement the placement to be loaded into the view
      */
-    private void loadPlacement(final Placement placement, final PlacementRequestParams params, final PlacementRequestListener listener) {
+    private void loadPlacement(final Activity activity, final Placement placement, final PlacementRequestParams params, final PlacementRequestListener listener) {
 
         WebView webView = new WebView(context);
         webView.setLayoutParams(new ViewGroup.LayoutParams(
@@ -212,7 +213,7 @@ public class AdyoZoneView extends FrameLayout {
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Adyo.recordClicks(context, placement);
+                    Adyo.recordClicks(activity, placement);
                 }
             });
         }

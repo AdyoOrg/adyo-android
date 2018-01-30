@@ -9,7 +9,12 @@
         android:supportsRtl="true">
 
         <activity android:name="za.co.adyo.android.views.AdyoWebInsideActivity"
-            android:label=""/>
+            android:label="">
+            <intent-filter>
+                <action android:name="za.co.adyo.android.views.AdyoWebInsideActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
     </application>
 

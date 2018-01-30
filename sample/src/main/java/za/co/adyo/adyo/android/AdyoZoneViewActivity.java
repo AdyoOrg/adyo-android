@@ -30,8 +30,8 @@ public class AdyoZoneViewActivity extends AppCompatActivity {
                 null
         );
 
-        zone1.requestPlacement(params1);
-        zone2.requestPlacement(params2);
+        zone1.requestPlacement(this, params1);
+        zone2.requestPlacement(this, params2);
 
     }
 }

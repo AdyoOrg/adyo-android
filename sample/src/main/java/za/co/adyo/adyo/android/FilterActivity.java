@@ -101,7 +101,7 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
         params.setWidth(null);
         params.setHeight(null);
 
-        adyoZoneView.requestPlacement(params, new PlacementRequestListener() {
+        adyoZoneView.requestPlacement(this, params, new PlacementRequestListener() {
             @Override
             public void onRequestComplete(boolean isFound, Placement placement) {
                 if(!isFound)

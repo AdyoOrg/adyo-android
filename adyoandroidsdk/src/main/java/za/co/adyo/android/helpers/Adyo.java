@@ -20,7 +20,6 @@ import za.co.adyo.android.requests.PlacementRequestParams;
 import za.co.adyo.android.requests.RecordImpressionRequest;
 import za.co.adyo.android.requests.RecordThirdPartyImpressionRequest;
 import za.co.adyo.android.views.AdyoPopupView;
-import za.co.adyo.android.views.AdyoWebInsideActivity;
 
 /**
  * Adyo
@@ -180,30 +179,23 @@ public class Adyo {
 
 
     /**
-     * @param context
+     * @param activity
      * @param placement the placement that the click must be recorded on
      */
-    public static void recordClicks(final Context context, final Placement placement) {
+    public static void recordClicks(final Activity activity, final Placement placement) {
 
         if (placement.getClickUrl() != null) {
 
-            if(placement.getAppTarget() == Placement.APP_TARGET_POPUP) {
+            if(placement.getAppTarget() == Placement.APP_TARGET_POPUP || placement.getAppTarget() == Placement.APP_TARGET_INSIDE) {
 
-               Adyo.showAlertDialog(((Activity)context).getFragmentManager(), placement.getClickUrl());
-
-            }
-            else if (placement.getAppTarget() == Placement.APP_TARGET_INSIDE)
-            {
-                Intent i = new Intent(context, AdyoWebInsideActivity.class);
-                i.putExtra("url", placement.getClickUrl());
-                context.startActivity(i);
+               Adyo.showAlertDialog(activity.getFragmentManager(), placement.getClickUrl());
 
             }
             else
             {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(placement.getClickUrl()));
-                context.startActivity(i);
+                activity.startActivity(i);
             }
             Log.d("ADYO", "Placement click recorded");
         }
