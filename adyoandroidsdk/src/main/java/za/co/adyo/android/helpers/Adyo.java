@@ -192,7 +192,7 @@ public class Adyo {
                Adyo.showAlertDialog(((Activity)context).getFragmentManager(), placement.getClickUrl());
 
             }
-            else if (placement.getAppTarget() == Placement.APP_TARGET_POPUP)
+            else if (placement.getAppTarget() == Placement.APP_TARGET_INSIDE)
             {
                 Intent i = new Intent(context, AdyoWebInsideActivity.class);
                 i.putExtra("url", placement.getClickUrl());
