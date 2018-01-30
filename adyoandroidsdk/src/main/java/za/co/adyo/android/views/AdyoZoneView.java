@@ -33,17 +33,22 @@ public class AdyoZoneView extends FrameLayout {
     private int width = 0;
     private int height = 0;
     private Runnable layoutRunnable = null;
+    private Context context;
+
 
     public AdyoZoneView(Context context) {
         super(context);
+        this.context = context;
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.context = context;
     }
 
 
@@ -112,7 +117,7 @@ public class AdyoZoneView extends FrameLayout {
                 }
             };
 
-            Adyo.requestPlacement(getContext(), params, listener);
+            Adyo.requestPlacement(context, params, listener);
         }
 
 
@@ -124,7 +129,7 @@ public class AdyoZoneView extends FrameLayout {
      */
     private void loadPlacement(final Placement placement, final PlacementRequestParams params, final PlacementRequestListener listener) {
 
-        WebView webView = new WebView(getContext());
+        WebView webView = new WebView(context);
         webView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -207,7 +212,7 @@ public class AdyoZoneView extends FrameLayout {
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Adyo.recordClicks(getContext(), placement);
+                    Adyo.recordClicks(context, placement);
                 }
             });
         }
@@ -236,7 +241,7 @@ public class AdyoZoneView extends FrameLayout {
         private String backgroundColor;
 
         AdyoZoneViewWebViewClient() {
-            super(getContext());
+            super(context);
         }
 
 
@@ -275,12 +280,12 @@ public class AdyoZoneView extends FrameLayout {
 
 
         //Log third party impression
-        Adyo.recordImpression(getContext(), placement, null);
+        Adyo.recordImpression( context, placement, null);
 
 
         //If we have gotten a placement back from the call and it has a refresh_after property greater than 0
         // we will do the call again in x seconds
-        Adyo.refreshPlacement(getContext(), placement, params, listener);
+        Adyo.refreshPlacement(context, placement, params, listener);
     }
 
     @Override
