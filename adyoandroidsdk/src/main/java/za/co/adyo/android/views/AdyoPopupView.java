@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -14,6 +16,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 
 import za.co.adyo.android.R;
 
@@ -48,10 +51,11 @@ public class AdyoPopupView extends DialogFragment {
         return frag;
     }
 
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String url = getArguments().getString("url");
-        @StyleRes int theme = getArguments().getInt("theme", -1);
+        @StyleRes final int theme = getArguments().getInt("theme", -1);
 
         AlertDialog.Builder alertDialogBuilder =
                 theme == -1
@@ -119,23 +123,54 @@ public class AdyoPopupView extends DialogFragment {
 
         webView.loadUrl(url);
 
+        alertDialogBuilder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(dialogInterface != null)
+                {
+                    dismiss();
+                }
+            }
+        });
+
+
+
 
 
         alertDialogBuilder.setView(view);
 
 
+        dialog = alertDialogBuilder.create();
 
-        alertDialogBuilder.setNeutralButton("Close", new DialogInterface.OnClickListener() {
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
+            public void onShow(DialogInterface dialog) {
 
+                Button button = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+
+                // if you do the following it will be left aligned, doesn't look
+                // correct
+                // button.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play,
+                // 0, 0, 0);
+
+                Drawable drawable = getActivity().getResources().getDrawable(
+                        R.drawable.adyo_ic_close);
+
+
+                drawable.setColorFilter(button.getTextColors().getDefaultColor(), PorterDuff.Mode.SRC_ATOP);
+
+
+                // set the bounds to place the drawable a bit right
+                drawable.setBounds((int) (drawable.getIntrinsicWidth() * 0.5),
+                        0, (int) (drawable.getIntrinsicWidth() * 1.5),
+                        drawable.getIntrinsicHeight());
+                button.setCompoundDrawables(null, null, drawable, null);
+
+            }
         });
 
-        dialog = alertDialogBuilder.create();
+
 
 
         return dialog;
