@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="za.co.adyo.android">
 
@@ -7,15 +8,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-
-        <activity android:name="za.co.adyo.android.views.AdyoWebInsideActivity"
-            android:label="">
-            <intent-filter>
-                <action android:name="za.co.adyo.android.views.AdyoWebInsideActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
+        <activity android:name=".AdyoZoneActivity"></activity>
     </application>
 
 </manifest>

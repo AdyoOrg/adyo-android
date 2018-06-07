@@ -34,7 +34,7 @@ public class GetPlacementRequest extends AdyoRestRequest {
 
     public GetPlacementRequest(PlacementRequestParams params) {
         this.params = params;
-        Log.d("ADYO_REQUEST", "Get placement request started");
+        Log.d("ADYO_REQUEST_" + params.getZoneId(), "Get placement request started");
     }
 
     @Override
@@ -88,12 +88,12 @@ public class GetPlacementRequest extends AdyoRestRequest {
 
     @Override
     protected void onComplete(Context context, InputStream response) throws IOException {
-        Log.d("ADYO_REQUEST", "Get placement request completed");
+        Log.d("ADYO_REQUEST_" + params.getZoneId(), "Get placement request completed");
     }
 
     @Override
     protected void onError(Context context) {
-        Log.d("ADYO_REQUEST", "Get placement request failed");
+        Log.d("ADYO_REQUEST_" + params.getZoneId(), "Get placement request failed");
     }
 
     @Override

@@ -1,8 +1,7 @@
-package za.co.adyo.android.views;
+package za.co.adyo.android;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -12,31 +11,27 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import za.co.adyo.android.R;
+public class AdyoZoneActivity extends AppCompatActivity {
 
-/**
- * AdyoWebInsideActivity
- * Activity to display click url's inside the application.
- *
- * @author UnitX, marilie
- * @version 1.0, 1/29/18
- */
-
-public class AdyoWebInsideActivity extends AppCompatActivity {
+    private View loader;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_adyo_zone);
 
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("");
         }
 
-        String url = getIntent().getStringExtra("url");
+        String url = getIntent().getStringExtra("URL");
 
-        setContentView(R.layout.activity_adyo);
-        WebView webView = (WebView) findViewById(R.id.adyo_web_view);
+        WebView webView = findViewById(R.id.adyo_web_view);
+        loader = findViewById(R.id.loader);
+        loader.setVisibility(View.VISIBLE);
+
+        webView.requestFocus(View.FOCUS_DOWN);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -48,10 +43,6 @@ public class AdyoWebInsideActivity extends AppCompatActivity {
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setDomStorageEnabled(true);
 
-        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-        webView.setScrollbarFadingEnabled(true);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(false);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -64,6 +55,12 @@ public class AdyoWebInsideActivity extends AppCompatActivity {
 
         webView.setWebViewClient(new WebViewClient() {
 
+            @Override
+            public void onPageCommitVisible(WebView view, String url) {
+                super.onPageCommitVisible(view, url);
+
+                loader.setVisibility(View.GONE);
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -74,6 +71,7 @@ public class AdyoWebInsideActivity extends AppCompatActivity {
                 view.loadUrl(command);
 
                 super.onPageFinished(view, url);
+
             }
 
             @SuppressWarnings("deprecation")
@@ -97,15 +95,15 @@ public class AdyoWebInsideActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            case android.R.id.home: {
+                super.onBackPressed();
+                break;
+
+            }
         }
+        return true;
     }
 }

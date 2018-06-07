@@ -66,23 +66,6 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
             onFilter(params);
         }
 
-//        adyoZoneView.requestPlacement(params, new PlacementRequestListener() {
-//            @Override
-//            public void onRequestComplete(boolean isFound, Placement placement) {
-//                if(!isFound)
-//                {
-//                    new AlertDialog.Builder(FilterActivity.this)
-//                            .setTitle("No Placement Found")
-//                            .setMessage("Please adjust the filters and try again")
-//                            .show();
-//                }
-//            }
-//
-//            @Override
-//            public void onRequestError(String error) {
-//
-//            }
-//        });
 
     }
 
@@ -134,5 +117,6 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
+
 
 }

@@ -53,7 +53,6 @@ public class AdyoRequestResponse {
 
 
         } catch (JSONException e) {
-            e.printStackTrace();
 
             //TODO: Check if the response is an array with multiple placements
 

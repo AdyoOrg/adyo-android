@@ -5,17 +5,21 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
+import java.util.UUID;
+
 import za.co.adyo.android.helpers.Adyo;
 import za.co.adyo.android.helpers.AdyoWebViewClient;
+import za.co.adyo.android.helpers.RequestRunnable;
 import za.co.adyo.android.listeners.PlacementRequestListener;
 import za.co.adyo.android.models.Placement;
 import za.co.adyo.android.requests.PlacementRequestParams;
@@ -33,23 +37,36 @@ public class AdyoZoneView extends FrameLayout {
 
     private int width = 0;
     private int height = 0;
-    private Runnable layoutRunnable = null;
     private Context context;
+    private Placement currentPlacement = null;
+    private boolean isPaused = false;
+    private Handler refreshHandler = new Handler();
+    private Runnable refreshRunnable;
+    private Handler requestHandler = new Handler();
+    private RequestRunnable requestRunnable;
+    private boolean doRequest = false;
+    private PlacementRequestListener currentListener;
+    private PlacementRequestParams currentParams;
+
+    private String id;
 
 
     public AdyoZoneView(Context context) {
         super(context);
         this.context = context;
+        id = UUID.randomUUID().toString();
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        id = UUID.randomUUID().toString();
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
+        id = UUID.randomUUID().toString();
     }
 
 
@@ -71,21 +88,27 @@ public class AdyoZoneView extends FrameLayout {
      * @param params                   the params used to make the request
      * @param placementRequestListener the listener called when a placement has been requested
      */
-    public void requestPlacement(final Activity activity, final PlacementRequestParams params, final PlacementRequestListener placementRequestListener) {
+    public void requestPlacement(final Activity activity, final PlacementRequestParams params, @Nullable final PlacementRequestListener placementRequestListener) {
+
+
+        currentParams = params;
 
         //If the view has not het layed itself out and the params does not
         //specify a width/height, we need to place the call on hold until the layout is done.
         if ((width == 0 && params.getWidth() == null) || (height == 0 && params.getHeight() == null)) {
-            layoutRunnable = new Runnable() {
+            doRequest = true;
 
+            requestRunnable = new RequestRunnable(context, params, placementRequestListener) {
                 @Override
                 public void run() {
-                    requestPlacement(activity, params, placementRequestListener);
+                    requestPlacement((Activity) context, this.params, this.listener);
                 }
             };
 
+
         } else {
 
+            doRequest = false;
             // Intercept params
             // The width and height of the view will be taken into account if no other values are specified
             if (params.getWidth() == null) {
@@ -96,7 +119,7 @@ public class AdyoZoneView extends FrameLayout {
                 params.setHeight(height);
             }
 
-            final PlacementRequestListener listener = new PlacementRequestListener() {
+            currentListener = new PlacementRequestListener() {
                 @Override
                 public void onRequestComplete(boolean isFound, Placement placement) {
 
@@ -105,7 +128,8 @@ public class AdyoZoneView extends FrameLayout {
                     }
 
                     if (isFound) {
-                        loadPlacement(activity, placement, params, this);
+                        currentPlacement = placement;
+                        loadPlacement();
                     }
                 }
 
@@ -118,19 +142,19 @@ public class AdyoZoneView extends FrameLayout {
                 }
             };
 
-            Adyo.requestPlacement(activity, params, listener);
+            Adyo.requestPlacement(activity, currentParams, currentListener);
         }
 
 
     }
 
 
-    /**
-     * @param placement the placement to be loaded into the view
-     */
-    private void loadPlacement(final Activity activity, final Placement placement, final PlacementRequestParams params, final PlacementRequestListener listener) {
+
+    private void loadPlacement() {
 
         WebView webView = new WebView(context);
+        webView.setFocusable(true);
+        webView.setFocusableInTouchMode(true);
         webView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -140,7 +164,7 @@ public class AdyoZoneView extends FrameLayout {
         webView.setBackgroundColor(0x01000000);
 
 
-        if (placement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
+        if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
 
             //The AdyoZone becomes a ImageView to handle Images
 
@@ -172,7 +196,7 @@ public class AdyoZoneView extends FrameLayout {
                     "</style>" +
                     "</head>" +
                     "<body id=\"page\">" +
-                    "<img src='" + placement.getCreativeUrl() + "'/>" +
+                    "<img src='" + currentPlacement.getCreativeUrl() + "'/>" +
                     "</body></html>";
 
             webView.loadData(url, "text/html; charset=UTF-8", null);
@@ -180,20 +204,9 @@ public class AdyoZoneView extends FrameLayout {
         } else {
 
             //The AdyoZone becomes a WebView to handle Rich Media
-            WebSettings settings = webView.getSettings();
-            settings.setJavaScriptEnabled(true);
-            settings.setLoadWithOverviewMode(true);
-            settings.setUseWideViewPort(true);
-            settings.setSupportZoom(true);
-            settings.setBuiltInZoomControls(false);
-            settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-            settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-            settings.setDomStorageEnabled(true);
-
-            setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-            setScrollbarFadingEnabled(true);
-            setVerticalScrollBarEnabled(false);
-            setHorizontalScrollBarEnabled(false);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setUseWideViewPort(true);
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -202,28 +215,30 @@ public class AdyoZoneView extends FrameLayout {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
 
-            webView.setInitialScale(1);
 
-            webView.loadUrl(placement.getCreativeUrl());
+            webView.loadUrl(currentPlacement.getCreativeUrl());
 
         }
 
-        if (placement.getClickUrl() != null) {
+        if (currentPlacement.getClickUrl() != null) {
 
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Adyo.recordClicks(activity, placement);
+                    Adyo.recordClicks((Activity) context, currentPlacement);
                 }
             });
         }
 
         AdyoZoneViewWebViewClient adyoWebClient = new AdyoZoneViewWebViewClient();
         webView.setWebViewClient(adyoWebClient);
-        adyoWebClient.setPlacement(placement, params, listener);
+        adyoWebClient.setPlacement(currentPlacement, currentParams, currentListener);
 
 
     }
+
+
+
 
     /**
      * Clears the ad in the view
@@ -234,12 +249,18 @@ public class AdyoZoneView extends FrameLayout {
 
 
     /**
+     * Clears the ad in the view
+     */
+    public void reset() {
+        refreshHandler.removeCallbacks(refreshRunnable);
+    }
+
+
+    /**
      * Custom WebViewClient used for Rich Media Creative
      */
     private class AdyoZoneViewWebViewClient extends AdyoWebViewClient {
 
-
-        private String backgroundColor;
 
         AdyoZoneViewWebViewClient() {
             super(context);
@@ -249,8 +270,10 @@ public class AdyoZoneView extends FrameLayout {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-            Log.d("ADYO_ZONE_VIEW", "Loading creative");
+            Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative");
+            view.setVisibility(GONE);
             super.onPageStarted(view, url, favicon);
+
         }
 
 
@@ -258,35 +281,46 @@ public class AdyoZoneView extends FrameLayout {
         public void onPageFinished(WebView view, String url) {
 
 
-            Log.d("ADYO_ZONE_VIEW", "Loading creative finished");
+            double scale = getScale(width)/ 100d ;
 
-            //To set the background of the WebView we need to use javascript after the page is loaded
-            String command = "javascript:(function() {" +
-                       // "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + backgroundColor + "\";" +
-                        "})()";
-            view.loadUrl(command);
+            Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative finished");
 
-            onCreativeLoaded(placement, params, listener);
+            String js =  "javascript:(function() { " +
+                    "var meta=document.createElement('meta');\n" +
+                    "meta.name='viewport';\n" +
+                    "\n" +
+                    "meta.setAttribute('content', 'width=device-width, initial-scale=" + scale + ", user-scalable=0');\n" +
+                    "\n" +
+                    "document.getElementsByTagName('head')[0].appendChild(meta);" +
+                    "document.getElementsByTagName('html')[0].style.margin = '0px';" +
+                    "document.getElementsByTagName('html')[0].style.padding = '0px';" +
+                    "document.getElementsByTagName('body')[0].style.margin = '0px';" +
+                    "document.getElementsByTagName('body')[0].style.padding = '0px';"
+                    + "})()";
+
+            view.loadUrl(js);
+
+
+            view.setVisibility(VISIBLE);
+
+            onCreativeLoaded();
 
         }
     }
 
-
     /**
      * Common function between creative types to handle when the creative is loaded
-     *
-     * @param placement placement being added to the AdyoZoneView
      */
-    private void onCreativeLoaded(Placement placement, PlacementRequestParams params, PlacementRequestListener listener) {
+    private void onCreativeLoaded() {
 
 
         //Log third party impression
-        Adyo.recordImpression( context, placement, null);
+        Adyo.recordImpression(context, currentPlacement, null);
 
 
         //If we have gotten a placement back from the call and it has a refresh_after property greater than 0
         // we will do the call again in x seconds
-        Adyo.refreshPlacement(context, placement, params, listener);
+        refreshPlacement();
     }
 
     @Override
@@ -298,9 +332,9 @@ public class AdyoZoneView extends FrameLayout {
         width = MeasureSpec.getSize(widthMeasureSpec);
         height = MeasureSpec.getSize(heightMeasureSpec);
 
-        if (layoutRunnable != null) {
-            new Handler().post(layoutRunnable);
-            layoutRunnable = null;
+        if (doRequest) {
+            doRequest = false;
+            requestHandler.post(requestRunnable);
         }
 
     }
@@ -314,5 +348,99 @@ public class AdyoZoneView extends FrameLayout {
         }
 
         return super.onInterceptTouchEvent(ev);
+    }
+
+    public void setPausePlacement(boolean isPaused) {
+
+        if (!isPaused && isPaused != this.isPaused)
+            refreshPlacement();
+
+        this.isPaused = isPaused;
+
+        Log.d("ADYO", "Adyo Zone View " +  id + " is now paused: " + isPaused);
+
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+
+
+        setPausePlacement(!hasWindowFocus);
+
+        super.onWindowFocusChanged(hasWindowFocus);
+    }
+
+
+    @Override
+    protected void onAttachedToWindow() {
+        setPausePlacement(false);
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+
+        setPausePlacement(true);
+        super.onDetachedFromWindow();
+    }
+
+
+    public void refreshPlacement() {
+
+        if (currentPlacement != null) {
+
+            if (currentPlacement.getRefreshAfter() > 0) {
+                refresh();
+
+                Log.d("ADYO", "Placement " +  id + " will be refreshed in " + currentPlacement.getRefreshAfter() + "seconds");
+            }
+        }
+
+    }
+
+
+    private void refresh() {
+        class RefreshRunnable implements Runnable {
+
+            private Context context;
+            private PlacementRequestParams currentParams;
+            private PlacementRequestListener currentListener;
+
+
+            private RefreshRunnable(Context context, PlacementRequestParams currentParams, PlacementRequestListener currentListener) {
+                this.context = context;
+                this.currentParams = currentParams;
+                this.currentListener = currentListener;
+            }
+            public void run() {
+                if (!isPaused) {
+
+                    Log.d("ADYO", "Adyo Zone View " +  id + " is not paused. Requesting placement");
+
+                    Adyo.requestPlacement(this.context, this.currentParams, this.currentListener);
+
+                } else {
+                    Log.d("ADYO", "Adyo Zone View " +  id + " is paused");
+                }
+            }
+        }
+
+        refreshHandler.removeCallbacks(refreshRunnable);
+
+        refreshRunnable = new RefreshRunnable(context, currentParams, currentListener);
+
+        refreshHandler.postDelayed(refreshRunnable,
+                currentPlacement.getRefreshAfter() * 1000);
+    }
+
+
+    private int getScale( int webViewWidth ){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        Double val = new Double(webViewWidth)/new Double(width);
+        val = val * 100d;
+        return val.intValue();
     }
 }

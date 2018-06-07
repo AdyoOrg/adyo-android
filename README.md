@@ -17,7 +17,7 @@ Add this line to your app's `build.gradle` under `dependencies`:
 
 ```groovy
 dependencies {
-  compile 'za.co.adyo:adyoandroidsdk:1.0.13'
+  compile 'za.co.adyo:adyoandroidsdk:1.0.19'
 }
 ```
 
@@ -316,7 +316,7 @@ If you have any feedback please feel free to email us at devops@unitx.co.za.
 - v1.0.3 - Minor bug fixes
 - v1.0.4 - Gradle updates
 - v1.0.5 - Custom Keyword support. Handling of Click URL destination
-- v1.0.13 - Minor bug fixes
+- v1.0.19 - Minor bug fixes
 
 
 

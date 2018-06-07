@@ -55,7 +55,7 @@ public class AdyoPopupView extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String url = getArguments().getString("url");
-        @StyleRes final int theme = getArguments().getInt("theme", -1);
+        @StyleRes final int theme = getArguments().getInt("theme", R.style.AdyoDialogFragmentStyle);
 
         AlertDialog.Builder alertDialogBuilder =
                 theme == -1
@@ -64,7 +64,9 @@ public class AdyoPopupView extends DialogFragment {
 
 
         view = LayoutInflater.from(getActivity()).inflate(R.layout.view_adyo_popup, null);
-        WebView webView = view.findViewById(R.id.adyo_web_view);
+        AdyoCustomWebView webView = view.findViewById(R.id.adyo_web_view);
+
+        webView.requestFocus(View.FOCUS_DOWN);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -76,10 +78,6 @@ public class AdyoPopupView extends DialogFragment {
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setDomStorageEnabled(true);
 
-        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-        webView.setScrollbarFadingEnabled(true);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(false);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

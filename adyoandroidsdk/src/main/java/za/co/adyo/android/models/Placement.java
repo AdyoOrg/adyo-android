@@ -165,4 +165,6 @@ public class Placement {
     public void setAppTarget(int appTarget) {
         this.appTarget = appTarget;
     }
+
+
 }

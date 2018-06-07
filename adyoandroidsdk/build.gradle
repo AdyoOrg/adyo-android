@@ -2,17 +2,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.0.13"
+version = "1.0.68"
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0.13"
+        versionName "1.0.68"
 
     }
     buildTypes {
@@ -20,6 +20,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
@@ -65,7 +69,8 @@ install {
 
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.squareup.okhttp3:okhttp:3.7.0'
 }
 
@@ -98,5 +103,3 @@ bintray {
         publish = true
     }
 }
-
-

@@ -5,11 +5,11 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
 
+import za.co.adyo.android.AdyoZoneActivity;
 import za.co.adyo.android.listeners.ImpressionRequestListener;
 import za.co.adyo.android.listeners.PlacementRequestListener;
 import za.co.adyo.android.models.Placement;
@@ -31,18 +31,13 @@ import za.co.adyo.android.views.AdyoPopupView;
 
 public class Adyo {
 
-    private static Handler handler;
-
     /**
      * @param params   parameters that will go into the request body
      * @param listener the listener will be called when request is completed or fails
      */
     public static void requestPlacement(final Context context, final PlacementRequestParams params, final PlacementRequestListener listener) {
 
-        if(handler == null)
-            handler = new Handler();
-        else
-            handler.removeCallbacksAndMessages(null);
+
 
         new GetPlacementRequest(params).execute(context, GetPlacementRequest.class.getName(), new AdyoRequestCallback() {
             @Override
@@ -186,7 +181,14 @@ public class Adyo {
 
         if (placement.getClickUrl() != null) {
 
-            if(placement.getAppTarget() == Placement.APP_TARGET_POPUP || placement.getAppTarget() == Placement.APP_TARGET_INSIDE) {
+            if( placement.getAppTarget() == Placement.APP_TARGET_INSIDE) {
+
+                Intent intent = new Intent(activity, AdyoZoneActivity.class);
+                intent.putExtra("URL", placement.getClickUrl());
+                activity.startActivity(intent);
+
+            }
+            else if(placement.getAppTarget() == Placement.APP_TARGET_POPUP) {
 
                Adyo.showAlertDialog(activity.getFragmentManager(), placement.getClickUrl());
 
@@ -202,26 +204,6 @@ public class Adyo {
 
     }
 
-
-    /**
-     * @param context
-     * @param placement placement to refresh
-     * @param params placement request parameters
-     * @param listener placement request listener
-     */
-    public static void refreshPlacement(final Context context, final Placement placement,
-                                        PlacementRequestParams params, PlacementRequestListener listener) {
-
-        if(placement.getRefreshAfter() > 0) {
-
-            handler.postDelayed(
-                    new RefreshRunnable(context, params, listener),
-                    placement.getRefreshAfter() * 1000);
-
-            Log.d("ADYO", "Placement will be refreshed in " + placement.getRefreshAfter() + "seconds");
-        }
-
-    }
 
     public static void showAlertDialog(FragmentManager fm, String url, @StyleRes int theme) {
 
