@@ -2,7 +2,9 @@ package za.co.adyo.android.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -15,6 +17,12 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+
+import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 import za.co.adyo.android.helpers.Adyo;
@@ -47,6 +55,7 @@ public class AdyoZoneView extends FrameLayout {
     private boolean doRequest = false;
     private PlacementRequestListener currentListener;
     private PlacementRequestParams currentParams;
+    private PlacementRequestParams [] availableParams = new PlacementRequestParams[]{};
 
     private String id;
 
@@ -55,18 +64,81 @@ public class AdyoZoneView extends FrameLayout {
         super(context);
         this.context = context;
         id = UUID.randomUUID().toString();
+        init();
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         id = UUID.randomUUID().toString();
+        init();
     }
 
     public AdyoZoneView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
         id = UUID.randomUUID().toString();
+        init();
+    }
+
+    private void init()
+    {
+        SharedPreferences sharedpreferences = context.getSharedPreferences("ADYO", Context.MODE_PRIVATE);
+        if(sharedpreferences.getString("user_id", "").equals(""))
+            new GetGAIDTask(context).execute();
+    }
+
+
+    private class GetGAIDTask extends AsyncTask<String, Integer, String> {
+
+        private Context context;
+
+        public GetGAIDTask(Context context) {
+
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            AdvertisingIdClient.Info adInfo;
+            adInfo = null;
+            try {
+                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context.getApplicationContext());
+                if (adInfo.isLimitAdTrackingEnabled()) // check if user has opted out of tracking
+                    return "";
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            }
+            return adInfo.getId();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            SharedPreferences sharedpreferences = context.getSharedPreferences("ADYO", Context.MODE_PRIVATE);
+
+            sharedpreferences.edit().putString("user_id", s).apply();
+        }
+    }
+
+
+    /**
+     * This will make a request to fetch a placement for a random set of parameters and if successful
+     * load it into the AdyoZoneView
+     *
+     * @param params the params used to make the request
+     */
+    public void requestRandomPlacement(Activity activity, final PlacementRequestParams [] params) {
+
+        availableParams = params;
+
+        int index = new Random().nextInt(params.length);
+
+        requestPlacement(activity, params[index], null);
     }
 
 
@@ -77,6 +149,10 @@ public class AdyoZoneView extends FrameLayout {
      * @param params the params used to make the request
      */
     public void requestPlacement(Activity activity, final PlacementRequestParams params) {
+
+
+        availableParams = new PlacementRequestParams[]{};
+
         requestPlacement(activity, params, null);
     }
 
@@ -92,6 +168,9 @@ public class AdyoZoneView extends FrameLayout {
 
 
         currentParams = params;
+
+        if(currentParams.getCreativeType() == null  ||  currentParams.getCreativeType().length == 0)
+            currentParams.setCreativeType(new String[]{"image", "rich-media", "tag"});
 
         //If the view has not het layed itself out and the params does not
         //specify a width/height, we need to place the call on hold until the layout is done.
@@ -149,7 +228,6 @@ public class AdyoZoneView extends FrameLayout {
     }
 
 
-
     private void loadPlacement() {
 
         WebView webView = new WebView(context);
@@ -162,7 +240,6 @@ public class AdyoZoneView extends FrameLayout {
         addView(webView);
 
         webView.setBackgroundColor(0x01000000);
-
 
         if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
 
@@ -201,13 +278,13 @@ public class AdyoZoneView extends FrameLayout {
 
             webView.loadData(url, "text/html; charset=UTF-8", null);
 
-        } else {
+        } else if(currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_RICH_MEDIA) {
 
             //The AdyoZone becomes a WebView to handle Rich Media
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
-
+            webView.setVerticalScrollBarEnabled(false);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -218,6 +295,22 @@ public class AdyoZoneView extends FrameLayout {
 
             webView.loadUrl(currentPlacement.getCreativeUrl());
 
+        }
+        else if(currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_TAG)
+        {
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setUseWideViewPort(true);
+            webView.setVerticalScrollBarEnabled(false);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            } else {
+                setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            }
+
+            webView.loadDataWithBaseURL(currentPlacement.getHtmlDomain(), currentPlacement.getCreativeHtml(), "text/html", "UTF-8" , null);
+           // webView.loadData(currentPlacement.getCreativeHtml(), "text/html", "UTF-8");
         }
 
         if (currentPlacement.getClickUrl() != null) {
@@ -234,11 +327,7 @@ public class AdyoZoneView extends FrameLayout {
         webView.setWebViewClient(adyoWebClient);
         adyoWebClient.setPlacement(currentPlacement, currentParams, currentListener);
 
-
     }
-
-
-
 
     /**
      * Clears the ad in the view
@@ -291,11 +380,7 @@ public class AdyoZoneView extends FrameLayout {
                     "\n" +
                     "meta.setAttribute('content', 'width=device-width, initial-scale=" + scale + ", user-scalable=0');\n" +
                     "\n" +
-                    "document.getElementsByTagName('head')[0].appendChild(meta);" +
-                    "document.getElementsByTagName('html')[0].style.margin = '0px';" +
-                    "document.getElementsByTagName('html')[0].style.padding = '0px';" +
-                    "document.getElementsByTagName('body')[0].style.margin = '0px';" +
-                    "document.getElementsByTagName('body')[0].style.padding = '0px';"
+                    "document.getElementsByTagName('head')[0].appendChild(meta);"
                     + "})()";
 
             view.loadUrl(js);
@@ -364,10 +449,7 @@ public class AdyoZoneView extends FrameLayout {
 
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
-
-
         setPausePlacement(!hasWindowFocus);
-
         super.onWindowFocusChanged(hasWindowFocus);
     }
 
@@ -380,7 +462,6 @@ public class AdyoZoneView extends FrameLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-
         setPausePlacement(true);
         super.onDetachedFromWindow();
     }
@@ -428,6 +509,15 @@ public class AdyoZoneView extends FrameLayout {
 
         refreshHandler.removeCallbacks(refreshRunnable);
 
+
+        //If we have an array of available params we pick a random one out of the list
+        if(availableParams.length > 0)
+        {
+            int index = new Random().nextInt(availableParams.length);
+            currentParams = availableParams[index];
+        }
+
+        //Else just use the currentParams we have
         refreshRunnable = new RefreshRunnable(context, currentParams, currentListener);
 
         refreshHandler.postDelayed(refreshRunnable,

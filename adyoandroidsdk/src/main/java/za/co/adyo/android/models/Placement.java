@@ -15,12 +15,15 @@ public class Placement {
     // @CREATIVE_TYPES
     public static final int CREATIVE_TYPE_IMAGE = 1;
     public static final int CREATIVE_TYPE_RICH_MEDIA = 2;
+    public static final int CREATIVE_TYPE_TAG = 3;
 
     public static final int APP_TARGET_DEFAULT = 11;
     public static final int APP_TARGET_INSIDE = 12;
     public static final int APP_TARGET_POPUP = 13;
 
     private String creativeUrl;
+    private String creativeHtml;
+    private String htmlDomain;
     private int creativeType;
     private String impressionUrl;
     @Nullable
@@ -30,10 +33,12 @@ public class Placement {
     private int refreshAfter;
     private int appTarget;
 
-    public Placement(String creativeUrl, String creativeType, String impressionUrl,
+    public Placement(@Nullable String creativeUrl, @Nullable String htmlUrl, String creativeType, @Nullable String htmlDomain, String impressionUrl,
                      @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget) {
 
         this.creativeUrl = creativeUrl;
+        this.creativeHtml = htmlUrl;
+        this.htmlDomain = htmlDomain;
 
         switch (creativeType) {
             case "image": {
@@ -42,6 +47,10 @@ public class Placement {
             }
             case "rich-media": {
                 this.creativeType = CREATIVE_TYPE_RICH_MEDIA;
+                break;
+            }
+            case "tag": {
+                this.creativeType = CREATIVE_TYPE_TAG;
                 break;
             }
         }
@@ -166,5 +175,26 @@ public class Placement {
         this.appTarget = appTarget;
     }
 
+    /**
+     * @return  html url to be displayed in the zone view
+     */
+    public String getCreativeHtml() {
+        return creativeHtml;
+    }
 
+    /**
+     *
+     * @param creativeHtml html url to be displayed in the zone view
+     */
+    public void setCreativeHtml(String creativeHtml) {
+        this.creativeHtml = creativeHtml;
+    }
+
+    public String getHtmlDomain() {
+        return htmlDomain;
+    }
+
+    public void setHtmlDomain(String htmlDomain) {
+        this.htmlDomain = htmlDomain;
+    }
 }

@@ -40,8 +40,11 @@ public class AdyoRequestResponse {
         try {
             JSONObject jsonObject = new JSONObject(inputStream);
 
-            Placement placement = new Placement(jsonObject.getString("creative_url"),
+            Placement placement = new Placement(
+                    jsonObject.has("creative_url") && !jsonObject.isNull("creative_url") ? jsonObject.getString("creative_url") : null,
+                    jsonObject.has("creative_html") && !jsonObject.isNull("creative_html") ? jsonObject.getString("creative_html") : null,
                     jsonObject.getString("creative_type"),
+                    jsonObject.has("tag_domain") && !jsonObject.isNull("tag_domain") ? jsonObject.getString("tag_domain") : null,
                     jsonObject.getString("impression_url"),
                     jsonObject.has("click_url") && !jsonObject.isNull("click_url") ? jsonObject.getString("click_url") : null,
                     jsonObject.has("third_party_impression_url") && !jsonObject.isNull("third_party_impression_url") ? jsonObject.getString("third_party_impression_url") : null,

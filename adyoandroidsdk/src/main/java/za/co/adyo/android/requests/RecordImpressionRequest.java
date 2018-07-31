@@ -47,14 +47,19 @@ public class RecordImpressionRequest extends AdyoRestRequest {
 
         Map<String, String> map = new HashMap<>();
 
-        String userAgent = new WebView(context).getSettings().getUserAgentString();
+        try {
+            String userAgent = new WebView(context).getSettings().getUserAgentString();
+            map.put("User-Agent", userAgent);
+        } catch (Exception ignore) {
 
-        map.put("content-type","application/json");
-        map.put("User-Agent", userAgent);
+        }
+
+        map.put("content-type", "application/json");
         map.put("X-Adyo-Platform", context.getResources().getBoolean(R.bool.isTablet) ? "Tablet" : "Phone");
         map.put("X-Adyo-Model", getDeviceName());
         map.put("X-Adyo-OS-Version", String.valueOf(Build.VERSION.RELEASE));
         map.put("X-Adyo-OS", "Android");
+        map.put("X-Adyo-SDK-Version", Build.VERSION.RELEASE);
 
         return map;
     }
@@ -83,7 +88,9 @@ public class RecordImpressionRequest extends AdyoRestRequest {
     }
 
 
-    /** Returns the consumer friendly device name */
+    /**
+     * Returns the consumer friendly device name
+     */
     private static String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;

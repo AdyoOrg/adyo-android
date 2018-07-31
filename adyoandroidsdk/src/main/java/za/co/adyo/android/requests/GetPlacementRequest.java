@@ -1,6 +1,7 @@
 package za.co.adyo.android.requests;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -52,7 +53,10 @@ public class GetPlacementRequest extends AdyoRestRequest {
     protected Map<String, String> getHeaders(Context context) {
 
         Map<String, String> map = new HashMap<>();
+
         map.put("content-type","application/json");
+        map.put("X-Adyo-SDK-Version", Build.VERSION.RELEASE);
+
         return map;
     }
 
@@ -75,6 +79,9 @@ public class GetPlacementRequest extends AdyoRestRequest {
 
             if(params.getCustomKeywords() != null)
                 body.put("custom", params.getCustomKeywords());
+
+            if(params.getCustomKeywords() != null)
+                body.put("creative_type", params.getCreativeType());
 
             array =  body.toString().getBytes("UTF-8");
         } catch (JSONException | UnsupportedEncodingException e) {

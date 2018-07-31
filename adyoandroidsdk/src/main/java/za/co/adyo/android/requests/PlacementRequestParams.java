@@ -2,12 +2,18 @@ package za.co.adyo.android.requests;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -24,14 +30,16 @@ public class PlacementRequestParams implements Parcelable {
     private long zoneId;
     private String userId;
     private String[] keywords;
+    private String[] creativeType;
     @Nullable
     private Integer width;
     @Nullable
     private Integer height;
     @Nullable
     private JSONObject customKeywords;
+    private String GAID;
 
-    public PlacementRequestParams(Context context, long networkId, long zoneId, @Nullable String userId, @Nullable String[] keywords, @Nullable Integer width, @Nullable Integer height, @Nullable JSONObject customKeywords) {
+    public PlacementRequestParams(Context context, long networkId, long zoneId, @Nullable String userId, @Nullable String[] keywords, @Nullable String[] creativeType, @Nullable Integer width, @Nullable Integer height, @Nullable JSONObject customKeywords) {
         this.networkId = networkId;
         this.zoneId = zoneId;
         this.customKeywords = customKeywords;
@@ -39,10 +47,18 @@ public class PlacementRequestParams implements Parcelable {
         // If a userId is not provide, a random id will be generated and saved in SharedPreferences for later use.
         // If a userId is provided, it is saved in SharedPreferences for later when the userId is again not provided.
         SharedPreferences sharedpreferences = context.getSharedPreferences("ADYO", Context.MODE_PRIVATE);
-        if (userId == null) {
 
-            String tempUserId = UUID.randomUUID().toString();
-            this.userId = sharedpreferences.getString("user_id", tempUserId);
+        if (userId == null || userId.equals("")) {
+
+            String tempUserId = sharedpreferences.getString("user_id", "");
+
+            if (tempUserId.equals("")) {
+
+                tempUserId = UUID.randomUUID().toString();
+
+            }
+
+            this.userId = tempUserId;
             sharedpreferences.edit().putString("user_id", tempUserId).apply();
         } else {
 
@@ -55,13 +71,22 @@ public class PlacementRequestParams implements Parcelable {
         else
             this.keywords = keywords;
 
+        if (creativeType == null)
+            this.creativeType = new String[0];
+        else
+            this.creativeType = keywords;
+
 
         this.width = width;
         this.height = height;
     }
 
     public PlacementRequestParams(Context context, long networkId, long zoneId, @Nullable String userId) {
-        this(context, networkId, zoneId, userId, null, null, null, null);
+        this(context, networkId, zoneId, userId, null, null, null, null, null);
+    }
+
+    public PlacementRequestParams(Context context, long networkId, long zoneId, @Nullable String userId, @Nullable String[] keywords, @Nullable Integer width, @Nullable Integer height, @Nullable JSONObject customKeywords) {
+        this(context, networkId, zoneId, userId, keywords, null, width, height, customKeywords);
     }
 
     protected PlacementRequestParams(Parcel in) {
@@ -69,6 +94,7 @@ public class PlacementRequestParams implements Parcelable {
         zoneId = in.readLong();
         userId = in.readString();
         keywords = in.createStringArray();
+        creativeType = in.createStringArray();
         if (in.readByte() == 0) {
             width = null;
         } else {
@@ -79,6 +105,32 @@ public class PlacementRequestParams implements Parcelable {
         } else {
             height = in.readInt();
         }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(networkId);
+        dest.writeLong(zoneId);
+        dest.writeString(userId);
+        dest.writeStringArray(keywords);
+        dest.writeStringArray(creativeType);
+        if (width == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(width);
+        }
+        if (height == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(height);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<PlacementRequestParams> CREATOR = new Creator<PlacementRequestParams>() {
@@ -195,28 +247,52 @@ public class PlacementRequestParams implements Parcelable {
         this.customKeywords = customKeywords;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    /**
+     * @return creative types supported
+     */
+    public String[] getCreativeType() {
+        return creativeType;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(networkId);
-        parcel.writeLong(zoneId);
-        parcel.writeString(userId);
-        parcel.writeStringArray(keywords);
-        if (width == null) {
-            parcel.writeByte((byte) 0);
-        } else {
-            parcel.writeByte((byte) 1);
-            parcel.writeInt(width);
+    /**
+     * @param creativeType creative types supported
+     */
+    public void setCreativeType(String[] creativeType) {
+        this.creativeType = creativeType;
+    }
+
+
+    private class GetGAIDTask extends AsyncTask<String, Integer, String> {
+
+        private Context context;
+
+        public GetGAIDTask(Context context) {
+
+            this.context = context;
         }
-        if (height == null) {
-            parcel.writeByte((byte) 0);
-        } else {
-            parcel.writeByte((byte) 1);
-            parcel.writeInt(height);
+
+        @Override
+        protected String doInBackground(String... strings) {
+            AdvertisingIdClient.Info adInfo;
+            adInfo = null;
+            try {
+                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context.getApplicationContext());
+                if (adInfo.isLimitAdTrackingEnabled()) // check if user has opted out of tracking
+                    return "";
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            }
+            return adInfo.getId();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            GAID = s;
         }
     }
+
 }
