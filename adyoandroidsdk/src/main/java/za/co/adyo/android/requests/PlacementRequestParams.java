@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -65,6 +66,8 @@ public class PlacementRequestParams implements Parcelable {
             this.userId = userId;
             sharedpreferences.edit().putString("user_id", userId).apply();
         }
+
+        Log.i("ADYO_USER_ID", userId);
 
         if (keywords == null)
             this.keywords = new String[0];

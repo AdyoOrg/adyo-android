@@ -83,9 +83,12 @@ public class AdyoZoneView extends FrameLayout {
 
     private void init()
     {
-        SharedPreferences sharedpreferences = context.getSharedPreferences("ADYO", Context.MODE_PRIVATE);
-        if(sharedpreferences.getString("user_id", "").equals(""))
-            new GetGAIDTask(context).execute();
+        try {
+            SharedPreferences sharedpreferences = context.getSharedPreferences("ADYO", Context.MODE_PRIVATE);
+            if (sharedpreferences.getString("user_id", "").equals(""))
+                new GetGAIDTask(context).execute();
+        }
+        catch (Exception ignored){}
     }
 
 
