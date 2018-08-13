@@ -135,13 +135,13 @@ public class AdyoZoneView extends FrameLayout {
      *
      * @param params the params used to make the request
      */
-    public void requestRandomPlacement(Activity activity, final PlacementRequestParams [] params) {
+    public void requestRandomPlacement(Activity activity, final PlacementRequestParams [] params, @Nullable final PlacementRequestListener placementRequestListener) {
 
         availableParams = params;
 
         int index = new Random().nextInt(params.length);
 
-        requestPlacement(activity, params[index], null);
+        requestPlacement(activity, params[index], placementRequestListener);
     }
 
 
