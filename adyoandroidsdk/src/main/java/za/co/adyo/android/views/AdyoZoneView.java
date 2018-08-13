@@ -144,6 +144,17 @@ public class AdyoZoneView extends FrameLayout {
         requestPlacement(activity, params[index], placementRequestListener);
     }
 
+    /**
+     * This will make a request to fetch a placement for a random set of parameters and if successful
+     * load it into the AdyoZoneView
+     *
+     * @param params the params used to make the request
+     */
+    public void requestRandomPlacement(Activity activity, final PlacementRequestParams [] params) {
+
+        requestRandomPlacement(activity, params, null);
+    }
+
 
     /**
      * This will make a request to fetch a placement and if successful

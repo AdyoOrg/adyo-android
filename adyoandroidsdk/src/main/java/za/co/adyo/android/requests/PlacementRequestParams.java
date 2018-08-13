@@ -67,7 +67,8 @@ public class PlacementRequestParams implements Parcelable {
             sharedpreferences.edit().putString("user_id", userId).apply();
         }
 
-        Log.i("ADYO_USER_ID", userId);
+        if (userId != null)
+            Log.i("ADYO_USER_ID", userId);
 
         if (keywords == null)
             this.keywords = new String[0];
@@ -286,8 +287,10 @@ public class PlacementRequestParams implements Parcelable {
                 e.printStackTrace();
             } catch (GooglePlayServicesNotAvailableException e) {
                 e.printStackTrace();
+                return "";
             } catch (GooglePlayServicesRepairableException e) {
                 e.printStackTrace();
+                return "";
             }
             return adInfo.getId();
         }
