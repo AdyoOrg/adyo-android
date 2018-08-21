@@ -294,6 +294,21 @@ public class AdyoZoneView extends FrameLayout {
 
         } else if(currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_RICH_MEDIA) {
 
+
+            String url = "<!DOCTYPE html>"  +
+            "<html>" +
+            "<head>" +
+            "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
+            "<meta charset=\"UTF-8\">" +
+            "<style type=\"text/css\">" +
+            "html {margin:0;padding:0;}" +
+                    "iframe {width: 100%; height: 100%; background: none; -webkit-touch-callout: none !important; -webkit-user-select: none !important; -webkit-tap-highlight-color: rgba(0,0,0,0) !important}" +
+            "</style>" +
+            "</head>" +
+            "<body id=\"page\">" +
+            "<iframe src='" + currentPlacement.getCreativeUrl() + "' frameBorder=\"0\" ></iframe>" +
+            "</body></html>";
+
             //The AdyoZone becomes a WebView to handle Rich Media
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setLoadWithOverviewMode(true);
@@ -306,12 +321,38 @@ public class AdyoZoneView extends FrameLayout {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
 
+            webView.loadData(url, "text/html; charset=UTF-8", null);
 
-            webView.loadUrl(currentPlacement.getCreativeUrl());
 
         }
         else if(currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_TAG)
         {
+
+            String url = "<!DOCTYPE html>" +
+            "<html>" +
+                "<head>" +
+                    "<meta name=\"viewport\" content=\"initial-scale=1.0\" />" +
+                    "<meta charset=\"UTF-8\">" +
+                    "<style type=\"text/css\">" +
+                        "html{margin:0;padding:0; height:100%}" +
+                            "body {" +
+                            "background: none;" +
+                            "margin: 0;" +
+                            "padding: 0; height:100%" +
+                        "}" +
+                        "iframe {" +
+                            "background: none;" +
+                            "-webkit-touch-callout: none !important;" +
+                            "-webkit-user-select: none !important;" +
+                            "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;" +
+                        "}" +
+                    "</style>" +
+                "</head>" +
+                "<body id=\"page\">" +
+                    currentPlacement.getCreativeHtml() +
+                "</body></html>";
+
+
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
@@ -323,7 +364,7 @@ public class AdyoZoneView extends FrameLayout {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
 
-            webView.loadDataWithBaseURL(currentPlacement.getHtmlDomain(), currentPlacement.getCreativeHtml(), "text/html", "UTF-8" , null);
+            webView.loadDataWithBaseURL(currentPlacement.getHtmlDomain(), url, "text/html", "UTF-8" , null);
            // webView.loadData(currentPlacement.getCreativeHtml(), "text/html", "UTF-8");
         }
 
