@@ -139,9 +139,14 @@ public class AdyoZoneView extends FrameLayout {
 
         availableParams = params;
 
-        int index = new Random().nextInt(params.length);
+        if(params.length > 0)
+        {
+            int index = new Random().nextInt(params.length);
 
-        requestPlacement(activity, params[index], placementRequestListener);
+            requestPlacement(activity, params[index], placementRequestListener);
+        }
+
+
     }
 
     /**
