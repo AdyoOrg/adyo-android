@@ -2,19 +2,25 @@ package za.co.adyo.android.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -55,7 +61,7 @@ public class AdyoZoneView extends FrameLayout {
     private boolean doRequest = false;
     private PlacementRequestListener currentListener;
     private PlacementRequestParams currentParams;
-    private PlacementRequestParams [] availableParams = new PlacementRequestParams[]{};
+    private PlacementRequestParams[] availableParams = new PlacementRequestParams[]{};
 
     private String id;
 
@@ -81,14 +87,13 @@ public class AdyoZoneView extends FrameLayout {
         init();
     }
 
-    private void init()
-    {
+    private void init() {
         try {
             SharedPreferences sharedpreferences = context.getSharedPreferences("ADYO", Context.MODE_PRIVATE);
             if (sharedpreferences.getString("user_id", "").equals(""))
                 new GetGAIDTask(context).execute();
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
     }
 
 
@@ -135,12 +140,11 @@ public class AdyoZoneView extends FrameLayout {
      *
      * @param params the params used to make the request
      */
-    public void requestRandomPlacement(Activity activity, final PlacementRequestParams [] params, @Nullable final PlacementRequestListener placementRequestListener) {
+    public void requestRandomPlacement(Activity activity, final PlacementRequestParams[] params, @Nullable final PlacementRequestListener placementRequestListener) {
 
         availableParams = params;
 
-        if(params.length > 0)
-        {
+        if (params.length > 0) {
             int index = new Random().nextInt(params.length);
 
             requestPlacement(activity, params[index], placementRequestListener);
@@ -155,7 +159,7 @@ public class AdyoZoneView extends FrameLayout {
      *
      * @param params the params used to make the request
      */
-    public void requestRandomPlacement(Activity activity, final PlacementRequestParams [] params) {
+    public void requestRandomPlacement(Activity activity, final PlacementRequestParams[] params) {
 
         requestRandomPlacement(activity, params, null);
     }
@@ -188,7 +192,7 @@ public class AdyoZoneView extends FrameLayout {
 
         currentParams = params;
 
-        if(currentParams.getCreativeType() == null  ||  currentParams.getCreativeType().length == 0)
+        if (currentParams.getCreativeType() == null || currentParams.getCreativeType().length == 0)
             currentParams.setCreativeType(new String[]{"image", "rich-media", "tag"});
 
         //If the view has not het layed itself out and the params does not
@@ -260,6 +264,7 @@ public class AdyoZoneView extends FrameLayout {
 
         webView.setBackgroundColor(0x01000000);
 
+
         if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
 
             //The AdyoZone becomes a ImageView to handle Images
@@ -297,22 +302,22 @@ public class AdyoZoneView extends FrameLayout {
 
             webView.loadData(url, "text/html; charset=UTF-8", null);
 
-        } else if(currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_RICH_MEDIA) {
+        } else if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_RICH_MEDIA) {
 
 
-            String url = "<!DOCTYPE html>"  +
-            "<html>" +
-            "<head>" +
-            "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
-            "<meta charset=\"UTF-8\">" +
-            "<style type=\"text/css\">" +
-            "html {margin:0;padding:0;}" +
+            String url = "<!DOCTYPE html>" +
+                    "<html>" +
+                    "<head>" +
+                    "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
+                    "<meta charset=\"UTF-8\">" +
+                    "<style type=\"text/css\">" +
+                    "html {margin:0;padding:0;}" +
                     "iframe {width: 100%; height: 100%; background: none; -webkit-touch-callout: none !important; -webkit-user-select: none !important; -webkit-tap-highlight-color: rgba(0,0,0,0) !important}" +
-            "</style>" +
-            "</head>" +
-            "<body id=\"page\">" +
-            "<iframe src='" + currentPlacement.getCreativeUrl() + "' frameBorder=\"0\" ></iframe>" +
-            "</body></html>";
+                    "</style>" +
+                    "</head>" +
+                    "<body id=\"page\">" +
+                    "<iframe src='" + currentPlacement.getCreativeUrl() + "' frameBorder=\"0\" ></iframe>" +
+                    "</body></html>";
 
             //The AdyoZone becomes a WebView to handle Rich Media
             webView.getSettings().setJavaScriptEnabled(true);
@@ -329,33 +334,31 @@ public class AdyoZoneView extends FrameLayout {
             webView.loadData(url, "text/html; charset=UTF-8", null);
 
 
-        }
-        else if(currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_TAG)
-        {
+        } else if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_TAG) {
 
             String url = "<!DOCTYPE html>" +
-            "<html>" +
-                "<head>" +
+                    "<html>" +
+                    "<head>" +
                     "<meta name=\"viewport\" content=\"initial-scale=1.0\" />" +
                     "<meta charset=\"UTF-8\">" +
                     "<style type=\"text/css\">" +
-                        "html{margin:0;padding:0; height:100%}" +
-                            "body {" +
-                            "background: none;" +
-                            "margin: 0;" +
-                            "padding: 0; height:100%" +
-                        "}" +
-                        "iframe {" +
-                            "background: none;" +
-                            "-webkit-touch-callout: none !important;" +
-                            "-webkit-user-select: none !important;" +
-                            "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;" +
-                        "}" +
+                    "html{margin:0;padding:0; height:100%}" +
+                    "body {" +
+                    "background: none;" +
+                    "margin: 0;" +
+                    "padding: 0; height:100%" +
+                    "}" +
+                    "iframe {" +
+                    "background: none;" +
+                    "-webkit-touch-callout: none !important;" +
+                    "-webkit-user-select: none !important;" +
+                    "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;" +
+                    "}" +
                     "</style>" +
-                "</head>" +
-                "<body id=\"page\">" +
+                    "</head>" +
+                    "<body id=\"page\">" +
                     currentPlacement.getCreativeHtml() +
-                "</body></html>";
+                    "</body></html>";
 
 
             webView.getSettings().setJavaScriptEnabled(true);
@@ -369,9 +372,12 @@ public class AdyoZoneView extends FrameLayout {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
 
-            webView.loadDataWithBaseURL(currentPlacement.getHtmlDomain(), url, "text/html", "UTF-8" , null);
-           // webView.loadData(currentPlacement.getCreativeHtml(), "text/html", "UTF-8");
+            if (currentPlacement.getHtmlDomain() != null)
+                webView.loadDataWithBaseURL(currentPlacement.getHtmlDomain(), url, "text/html", "UTF-8", null);
+            else
+                webView.loadData(url, "text/html; charset=UTF-8", null);
         }
+
 
         if (currentPlacement.getClickUrl() != null) {
 
@@ -385,6 +391,22 @@ public class AdyoZoneView extends FrameLayout {
 
         AdyoZoneViewWebViewClient adyoWebClient = new AdyoZoneViewWebViewClient();
         webView.setWebViewClient(adyoWebClient);
+        webView.getSettings().setSupportMultipleWindows(true);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg)
+            {
+                WebView newWebView = new WebView(getContext());
+                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                transport.setWebView(newWebView);
+                resultMsg.sendToTarget();
+                return true;
+            }
+        });
+
+
+
         adyoWebClient.setPlacement(currentPlacement, currentParams, currentListener);
 
     }
@@ -421,6 +443,7 @@ public class AdyoZoneView extends FrameLayout {
 
             Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative");
             view.setVisibility(GONE);
+
             super.onPageStarted(view, url, favicon);
 
         }
@@ -430,11 +453,11 @@ public class AdyoZoneView extends FrameLayout {
         public void onPageFinished(WebView view, String url) {
 
 
-            double scale = getScale(width)/ 100d ;
+            double scale = getScale(width) / 100d;
 
             Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative finished");
 
-            String js =  "javascript:(function() { " +
+            String js = "javascript:(function() { " +
                     "var meta=document.createElement('meta');\n" +
                     "meta.name='viewport';\n" +
                     "\n" +
@@ -450,7 +473,10 @@ public class AdyoZoneView extends FrameLayout {
 
             onCreativeLoaded();
 
+
         }
+
+
     }
 
     /**
@@ -488,7 +514,7 @@ public class AdyoZoneView extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 
-        if (hasOnClickListeners()) {
+        if (currentPlacement.getClickUrl() != null) {
             return true;
         }
 
@@ -502,7 +528,7 @@ public class AdyoZoneView extends FrameLayout {
 
         this.isPaused = isPaused;
 
-        Log.d("ADYO", "Adyo Zone View " +  id + " is now paused: " + isPaused);
+        Log.d("ADYO", "Adyo Zone View " + id + " is now paused: " + isPaused);
 
     }
 
@@ -534,7 +560,7 @@ public class AdyoZoneView extends FrameLayout {
             if (currentPlacement.getRefreshAfter() > 0) {
                 refresh();
 
-                Log.d("ADYO", "Placement " +  id + " will be refreshed in " + currentPlacement.getRefreshAfter() + "seconds");
+                Log.d("ADYO", "Placement " + id + " will be refreshed in " + currentPlacement.getRefreshAfter() + "seconds");
             }
         }
 
@@ -554,15 +580,16 @@ public class AdyoZoneView extends FrameLayout {
                 this.currentParams = currentParams;
                 this.currentListener = currentListener;
             }
+
             public void run() {
                 if (!isPaused) {
 
-                    Log.d("ADYO", "Adyo Zone View " +  id + " is not paused. Requesting placement");
+                    Log.d("ADYO", "Adyo Zone View " + id + " is not paused. Requesting placement");
 
                     Adyo.requestPlacement(this.context, this.currentParams, this.currentListener);
 
                 } else {
-                    Log.d("ADYO", "Adyo Zone View " +  id + " is paused");
+                    Log.d("ADYO", "Adyo Zone View " + id + " is paused");
                 }
             }
         }
@@ -571,8 +598,7 @@ public class AdyoZoneView extends FrameLayout {
 
 
         //If we have an array of available params we pick a random one out of the list
-        if(availableParams.length > 0)
-        {
+        if (availableParams.length > 0) {
             int index = new Random().nextInt(availableParams.length);
             currentParams = availableParams[index];
         }
@@ -585,12 +611,13 @@ public class AdyoZoneView extends FrameLayout {
     }
 
 
-    private int getScale( int webViewWidth ){
+    private int getScale(int webViewWidth) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
-        Double val = new Double(webViewWidth)/new Double(width);
+        Double val = new Double(webViewWidth) / new Double(width);
         val = val * 100d;
         return val.intValue();
     }
+
 }

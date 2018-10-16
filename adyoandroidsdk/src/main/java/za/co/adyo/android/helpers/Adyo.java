@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.customtabs.CustomTabsIntent;
 import android.util.Log;
 
 import za.co.adyo.android.AdyoZoneActivity;
@@ -184,9 +185,10 @@ public class Adyo {
 
             if( placement.getAppTarget() == Placement.APP_TARGET_INSIDE) {
 
-                Intent intent = new Intent(activity, AdyoZoneActivity.class);
-                intent.putExtra("URL", placement.getClickUrl());
-                activity.startActivity(intent);
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(activity, Uri.parse(placement.getClickUrl()));
+
 
             }
             else if(placement.getAppTarget() == Placement.APP_TARGET_POPUP) {
@@ -199,6 +201,7 @@ public class Adyo {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(placement.getClickUrl()));
                 activity.startActivity(i);
+
             }
             Log.d("ADYO", "Placement click recorded");
         }

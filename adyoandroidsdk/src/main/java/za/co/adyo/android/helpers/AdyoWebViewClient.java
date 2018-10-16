@@ -1,11 +1,15 @@
 package za.co.adyo.android.helpers;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.customtabs.CustomTabsIntent;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -40,38 +44,24 @@ public abstract class AdyoWebViewClient extends WebViewClient {
     }
 
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (!placement.getCreativeUrl().equals(url)) {
 
-            if(placement.getAppTarget() == Placement.APP_TARGET_DEFAULT) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                context.startActivity(i);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        String url=request.getUrl().toString();
-
-        if ((placement.getCreativeUrl() != null && !placement.getCreativeUrl().equals(url)) ||
-                (placement.getCreativeHtml() != null && !placement.getCreativeHtml().equals(url))) {
-
-            if(placement.getAppTarget() == Placement.APP_TARGET_DEFAULT) {
-
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                context.startActivity(i);
-            }
-            return true;
-        }
-        return false;
-    }
+//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//    @Override
+//    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+//        String url=request.getUrl().toString();
+//
+//        if ((placement.getCreativeUrl() != null && !placement.getCreativeUrl().equals(url)) ||
+//                (placement.getCreativeHtml() != null && !placement.getCreativeHtml().equals(url))) {
+//
+//            if(placement.getAppTarget() == Placement.APP_TARGET_DEFAULT) {
+//
+//                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//                CustomTabsIntent customTabsIntent = builder.build();
+//                customTabsIntent.launchUrl(context, Uri.parse(url));
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
 
 }
