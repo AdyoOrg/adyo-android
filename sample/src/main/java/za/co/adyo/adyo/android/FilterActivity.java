@@ -1,11 +1,13 @@
 package za.co.adyo.adyo.android;
 
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 
 import za.co.adyo.android.listeners.PlacementRequestListener;
@@ -24,6 +26,10 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
+
+        if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
 
         Button filterButton = (Button) findViewById(R.id.filter_button);
 

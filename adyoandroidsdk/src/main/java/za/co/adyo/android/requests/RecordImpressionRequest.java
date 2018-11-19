@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MediaType;
+import za.co.adyo.android.BuildConfig;
 import za.co.adyo.android.R;
 
 /**
@@ -59,7 +60,7 @@ public class RecordImpressionRequest extends AdyoRestRequest {
         map.put("X-Adyo-Model", getDeviceName());
         map.put("X-Adyo-OS-Version", String.valueOf(Build.VERSION.RELEASE));
         map.put("X-Adyo-OS", "Android");
-        map.put("X-Adyo-SDK-Version", Build.VERSION.RELEASE);
+        map.put("X-Adyo-SDK-Version", BuildConfig.VERSION_NAME);
 
         return map;
     }

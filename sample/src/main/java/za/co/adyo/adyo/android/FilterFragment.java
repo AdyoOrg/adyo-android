@@ -297,10 +297,18 @@ public class FilterFragment extends BottomSheetDialogFragment {
         int widthPixels = 300;
         int heightPixels = 250;
 
-        networkIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_network_id)));
-        zoneIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_zone_id_1)));
+//        networkIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_network_id)));
+//        zoneIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_zone_id_1)));
+//        userIdEdit.setText("");
+//        keywordsEdit.setText("");
+//        widthEdit.setText(String.valueOf(widthPixels));
+//        heightEdit.setText(String.valueOf(heightPixels));
+
+
+        networkIdEdit.setText("3");
+        zoneIdEdit.setText("7");
         userIdEdit.setText("");
-        keywordsEdit.setText("");
+        keywordsEdit.setText("school_1135");
         widthEdit.setText(String.valueOf(widthPixels));
         heightEdit.setText(String.valueOf(heightPixels));
 

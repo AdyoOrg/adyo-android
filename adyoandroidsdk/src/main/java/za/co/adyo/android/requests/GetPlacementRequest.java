@@ -2,6 +2,7 @@ package za.co.adyo.android.requests;
 
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.MediaType;
+import za.co.adyo.android.BuildConfig;
 import za.co.adyo.android.R;
 
 /**
@@ -55,7 +57,12 @@ public class GetPlacementRequest extends AdyoRestRequest {
         Map<String, String> map = new HashMap<>();
 
         map.put("content-type","application/json");
-        map.put("X-Adyo-SDK-Version", Build.VERSION.RELEASE);
+
+        map.put("X-Adyo-Platform", context.getResources().getBoolean(R.bool.isTablet) ? "Tablet" : "Phone");
+        map.put("X-Adyo-Model", getDeviceName());
+        map.put("X-Adyo-OS-Version", String.valueOf(Build.VERSION.RELEASE));
+        map.put("X-Adyo-OS", "Android");
+        map.put("X-Adyo-SDK-Version", BuildConfig.VERSION_NAME);
 
         return map;
     }
@@ -106,6 +113,41 @@ public class GetPlacementRequest extends AdyoRestRequest {
     @Override
     protected String getMethod(Context context) {
         return METHOD_POST;
+    }
+
+
+    /**
+     * Returns the consumer friendly device name
+     */
+    private static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+
+        StringBuilder phrase = new StringBuilder();
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+            phrase.append(c);
+        }
+
+        return phrase.toString();
     }
 
 }

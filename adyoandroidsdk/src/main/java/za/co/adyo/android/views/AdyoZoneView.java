@@ -311,7 +311,8 @@ public class AdyoZoneView extends FrameLayout {
                     "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
                     "<meta charset=\"UTF-8\">" +
                     "<style type=\"text/css\">" +
-                    "html {margin:0;padding:0;}" +
+                    "html {margin:0; padding:0; height:100%}" +
+                    "body {background: none; margin: 0; padding: 0; height:100%}" +
                     "iframe {width: 100%; height: 100%; background: none; -webkit-touch-callout: none !important; -webkit-user-select: none !important; -webkit-tap-highlight-color: rgba(0,0,0,0) !important}" +
                     "</style>" +
                     "</head>" +
@@ -341,13 +342,8 @@ public class AdyoZoneView extends FrameLayout {
                     "<head>" +
                     "<meta name=\"viewport\" content=\"initial-scale=1.0\" />" +
                     "<meta charset=\"UTF-8\">" +
-                    "<style type=\"text/css\">" +
-                    "html{margin:0;padding:0; height:100%}" +
-                    "body {" +
-                    "background: none;" +
-                    "margin: 0;" +
-                    "padding: 0; height:100%" +
-                    "}" +
+                    "html {margin:0; padding:0; height:100%}" +
+                    "body {background: none; margin: 0; padding: 0; height:100%}" +
                     "iframe {" +
                     "background: none;" +
                     "-webkit-touch-callout: none !important;" +
@@ -457,16 +453,16 @@ public class AdyoZoneView extends FrameLayout {
 
             Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative finished");
 
-            String js = "javascript:(function() { " +
-                    "var meta=document.createElement('meta');\n" +
-                    "meta.name='viewport';\n" +
-                    "\n" +
-                    "meta.setAttribute('content', 'width=device-width, initial-scale=" + scale + ", user-scalable=0');\n" +
-                    "\n" +
-                    "document.getElementsByTagName('head')[0].appendChild(meta);"
-                    + "})()";
-
-            view.loadUrl(js);
+//            String js = "javascript:(function() { " +
+//                    "var meta=document.createElement('meta');\n" +
+//                    "meta.name='viewport';\n" +
+//                    "\n" +
+//                    "meta.setAttribute('content', 'width=device-width, initial-scale=" + scale + ", user-scalable=0');\n" +
+//                    "\n" +
+//                    "document.getElementsByTagName('head')[0].appendChild(meta);"
+//                    + "})()";
+//
+//            view.loadUrl(js);
 
 
             view.setVisibility(VISIBLE);
@@ -500,6 +496,11 @@ public class AdyoZoneView extends FrameLayout {
 
         //Save the width and height to be used as parameters for the getPlacement request with non
         //are specified
+
+       // float density  = getResources().getDisplayMetrics().density;
+
+//        width = Math.round(MeasureSpec.getSize(widthMeasureSpec)/density);
+//        height = Math.round(MeasureSpec.getSize(heightMeasureSpec)/density);
         width = MeasureSpec.getSize(widthMeasureSpec);
         height = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -514,7 +515,7 @@ public class AdyoZoneView extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 
-        if (currentPlacement.getClickUrl() != null) {
+        if (currentPlacement != null && currentPlacement.getClickUrl() != null) {
             return true;
         }
 
