@@ -342,6 +342,7 @@ public class AdyoZoneView extends FrameLayout {
                     "<head>" +
                     "<meta name=\"viewport\" content=\"initial-scale=1.0\" />" +
                     "<meta charset=\"UTF-8\">" +
+                    "<style>" +
                     "html {margin:0; padding:0; height:100%}" +
                     "body {background: none; margin: 0; padding: 0; height:100%}" +
                     "iframe {" +
@@ -388,6 +389,8 @@ public class AdyoZoneView extends FrameLayout {
         AdyoZoneViewWebViewClient adyoWebClient = new AdyoZoneViewWebViewClient();
         webView.setWebViewClient(adyoWebClient);
         webView.getSettings().setSupportMultipleWindows(true);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -449,10 +452,10 @@ public class AdyoZoneView extends FrameLayout {
         public void onPageFinished(WebView view, String url) {
 
 
-            double scale = getScale(width) / 100d;
-
-            Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative finished");
-
+//            double scale = getScale(width) / 100d;
+//
+//            Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative finished");
+//
 //            String js = "javascript:(function() { " +
 //                    "var meta=document.createElement('meta');\n" +
 //                    "meta.name='viewport';\n" +
@@ -461,8 +464,8 @@ public class AdyoZoneView extends FrameLayout {
 //                    "\n" +
 //                    "document.getElementsByTagName('head')[0].appendChild(meta);"
 //                    + "})()";
-//
-//            view.loadUrl(js);
+
+         //   view.loadUrl(js);
 
 
             view.setVisibility(VISIBLE);
