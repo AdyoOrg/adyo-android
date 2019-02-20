@@ -1,16 +1,25 @@
 package za.co.adyo.android.helpers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 
 import za.co.adyo.android.AdyoZoneActivity;
+import za.co.adyo.android.R;
 import za.co.adyo.android.listeners.ImpressionRequestListener;
 import za.co.adyo.android.listeners.PlacementRequestListener;
 import za.co.adyo.android.models.Placement;
@@ -193,7 +202,7 @@ public class Adyo {
             }
             else if(placement.getAppTarget() == Placement.APP_TARGET_POPUP) {
 
-               Adyo.showAlertDialog(activity.getFragmentManager(), placement.getClickUrl());
+               Adyo.showAlertDialog(activity.getFragmentManager(), placement.getClickUrl(), activity);
 
             }
             else
@@ -215,11 +224,66 @@ public class Adyo {
         alertDialog.show(fm, "fragment_alert");
     }
 
-    public static void showAlertDialog(FragmentManager fm, String url) {
-        AdyoPopupView alertDialog = AdyoPopupView.newInstance(url);
-        alertDialog.show(fm, "fragment_alert");
-    }
+    public static void showAlertDialog(FragmentManager fm, String url, final Context context) {
+//        AdyoPopupView alertDialog = AdyoPopupView.newInstance(url);
+//        alertDialog.show(fm, "fragment_alert");
 
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+        WebView wv = new WebView(context);
+        wv.loadUrl(url);
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+
+                return true;
+            }
+        });
+
+        alert.setView(wv);
+        alert.setNegativeButton(" ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = alert.create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+
+                Button button = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+
+                // if you do the following it will be left aligned, doesn't look
+                // correct
+                // button.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play,
+                // 0, 0, 0);
+
+                Drawable drawable = context.getResources().getDrawable(
+                        R.drawable.adyo_ic_close);
+
+
+                drawable.setColorFilter(button.getTextColors().getDefaultColor(), PorterDuff.Mode.SRC_ATOP);
+
+
+                // set the bounds to place the drawable a bit right
+                drawable.setBounds((int) (drawable.getIntrinsicWidth() * 0.5),
+                        0, (int) (drawable.getIntrinsicWidth() * 1.5),
+                        drawable.getIntrinsicHeight());
+                button.setCompoundDrawables(null, null, drawable, null);
+
+            }
+        });
+
+
+        alertDialog.show();
+
+
+    }
 
 
 }

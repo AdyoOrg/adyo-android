@@ -72,6 +72,7 @@ public class Placement {
                 this.appTarget = APP_TARGET_DEFAULT;
                 break;
         }
+
     }
 
     /**
