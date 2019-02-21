@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -264,7 +265,6 @@ public class AdyoZoneView extends FrameLayout {
 
         webView.setBackgroundColor(0x01000000);
 
-
         if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
 
             //The AdyoZone becomes a ImageView to handle Images
@@ -299,6 +299,8 @@ public class AdyoZoneView extends FrameLayout {
                     "<body id=\"page\">" +
                     "<img src='" + currentPlacement.getCreativeUrl() + "'/>" +
                     "</body></html>";
+
+
 
             webView.loadData(url, "text/html; charset=UTF-8", null);
 
@@ -451,27 +453,11 @@ public class AdyoZoneView extends FrameLayout {
         @Override
         public void onPageFinished(WebView view, String url) {
 
-
-//            double scale = getScale(width) / 100d;
-//
-//            Log.d("ADYO_ZONE_VIEW_" + params.getZoneId(), "Loading creative finished");
-//
-//            String js = "javascript:(function() { " +
-//                    "var meta=document.createElement('meta');\n" +
-//                    "meta.name='viewport';\n" +
-//                    "\n" +
-//                    "meta.setAttribute('content', 'width=device-width, initial-scale=" + scale + ", user-scalable=0');\n" +
-//                    "\n" +
-//                    "document.getElementsByTagName('head')[0].appendChild(meta);"
-//                    + "})()";
-
-         //   view.loadUrl(js);
-
+           // CookieSyncManager.getInstance().sync();
 
             view.setVisibility(VISIBLE);
 
             onCreativeLoaded();
-
 
         }
 
