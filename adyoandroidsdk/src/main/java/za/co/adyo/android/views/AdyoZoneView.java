@@ -453,7 +453,7 @@ public class AdyoZoneView extends FrameLayout {
         @Override
         public void onPageFinished(WebView view, String url) {
 
-           // CookieSyncManager.getInstance().sync();
+            CookieSyncManager.getInstance().sync();
 
             view.setVisibility(VISIBLE);
 
