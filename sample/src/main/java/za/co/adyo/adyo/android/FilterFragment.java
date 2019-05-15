@@ -11,12 +11,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -46,6 +48,9 @@ public class FilterFragment extends BottomSheetDialogFragment {
     private EditText keywordsEdit;
     private EditText widthEdit;
     private EditText heightEdit;
+    private SwitchCompat displaySwitch;
+    private SwitchCompat impressionSwitch;
+    private SwitchCompat rotateSwitch;
 
     //Custom Keywords (CKW)
     private LinearLayout CKWContainer;
@@ -103,6 +108,13 @@ public class FilterFragment extends BottomSheetDialogFragment {
         heightEdit = contentView.findViewById(R.id.height_edit);
         filterButton = contentView.findViewById(R.id.filter_button);
         resetButton = contentView.findViewById(R.id.reset_button);
+        displaySwitch = contentView.findViewById(R.id.display_switch);
+        impressionSwitch = contentView.findViewById(R.id.impression_switch);
+        rotateSwitch = contentView.findViewById(R.id.rotate_switch);
+
+        displaySwitch.setChecked(true);
+        impressionSwitch.setChecked(true);
+        rotateSwitch.setChecked(true);
 
         CKWContainer = contentView.findViewById(R.id.ckw_container);
 
@@ -234,7 +246,7 @@ public class FilterFragment extends BottomSheetDialogFragment {
                         CKW
                 );
 
-                listener.onFilter(params);
+                listener.onFilter(params, displaySwitch.isChecked(), impressionSwitch.isChecked(), rotateSwitch.isChecked());
             }
         });
 
@@ -289,7 +301,7 @@ public class FilterFragment extends BottomSheetDialogFragment {
 
     public interface OnFilterListener {
 
-        void onFilter(PlacementRequestParams params);
+        void onFilter(PlacementRequestParams params, boolean displayAd, boolean recordImpression, boolean rotate);
     }
 
 

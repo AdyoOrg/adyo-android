@@ -2,6 +2,8 @@ package za.co.adyo.android.models;
 
 import android.support.annotation.Nullable;
 
+import org.json.JSONObject;
+
 /**
  * Placement
  * Models a Placement and all of its properties
@@ -32,9 +34,10 @@ public class Placement {
     private String thirdPartyImpressionUrl;
     private int refreshAfter;
     private int appTarget;
+    private JSONObject metadata;
 
     public Placement(@Nullable String creativeUrl, @Nullable String htmlUrl, String creativeType, @Nullable String htmlDomain, String impressionUrl,
-                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget) {
+                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget, JSONObject metadata) {
 
         this.creativeUrl = creativeUrl;
         this.creativeHtml = htmlUrl;
@@ -59,6 +62,7 @@ public class Placement {
         this.clickUrl = clickUrl;
         this.thirdPartyImpressionUrl = thirdPartyImpressionUrl;
         this.refreshAfter = refreshAfter;
+        this.metadata = metadata;
 
         // Used to determine how the click url will be displayed
         switch (appTarget) {
@@ -197,5 +201,13 @@ public class Placement {
 
     public void setHtmlDomain(String htmlDomain) {
         this.htmlDomain = htmlDomain;
+    }
+
+    public JSONObject getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(JSONObject metadata) {
+        this.metadata = metadata;
     }
 }

@@ -2,16 +2,12 @@ package za.co.adyo.android.views;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsIntent;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,7 +17,6 @@ import android.view.ViewGroup;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -65,6 +60,9 @@ public class AdyoZoneView extends FrameLayout {
     private PlacementRequestParams[] availableParams = new PlacementRequestParams[]{};
 
     private String id;
+    private boolean shouldRecordImpression = true;
+    private boolean shouldRotate = true;
+    private boolean shouldDisplay = true;
 
 
     public AdyoZoneView(Context context) {
@@ -115,6 +113,7 @@ public class AdyoZoneView extends FrameLayout {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context.getApplicationContext());
                 if (adInfo.isLimitAdTrackingEnabled()) // check if user has opted out of tracking
                     return "";
+                return adInfo.getId();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (GooglePlayServicesNotAvailableException e) {
@@ -122,7 +121,7 @@ public class AdyoZoneView extends FrameLayout {
             } catch (GooglePlayServicesRepairableException e) {
                 e.printStackTrace();
             }
-            return adInfo.getId();
+            return "";
         }
 
         @Override
@@ -232,7 +231,16 @@ public class AdyoZoneView extends FrameLayout {
 
                     if (isFound) {
                         currentPlacement = placement;
-                        loadPlacement();
+                        //Check if the ad should be loaded into the webview
+                        if(shouldDisplay) {
+                            loadPlacement();
+                        }
+                        else
+                        {
+                           //Call afterCreativeLoaded to handle impression and refreshing
+                            afterCreativeLoaded();
+
+                        }
                     }
                 }
 
@@ -457,7 +465,7 @@ public class AdyoZoneView extends FrameLayout {
 
             view.setVisibility(VISIBLE);
 
-            onCreativeLoaded();
+            afterCreativeLoaded();
 
         }
 
@@ -467,16 +475,19 @@ public class AdyoZoneView extends FrameLayout {
     /**
      * Common function between creative types to handle when the creative is loaded
      */
-    private void onCreativeLoaded() {
+    private void afterCreativeLoaded() {
 
 
         //Log third party impression
-        Adyo.recordImpression(context, currentPlacement, null);
+
+        if(shouldRecordImpression)
+            Adyo.recordImpression(context, currentPlacement, null);
 
 
         //If we have gotten a placement back from the call and it has a refresh_after property greater than 0
         // we will do the call again in x seconds
-        refreshPlacement();
+        if(shouldRotate)
+            refreshPlacement();
     }
 
     @Override
@@ -514,7 +525,8 @@ public class AdyoZoneView extends FrameLayout {
     public void setPausePlacement(boolean isPaused) {
 
         if (!isPaused && isPaused != this.isPaused)
-            refreshPlacement();
+            if(shouldRotate)
+                refreshPlacement();
 
         this.isPaused = isPaused;
 
@@ -610,4 +622,32 @@ public class AdyoZoneView extends FrameLayout {
         return val.intValue();
     }
 
+    //Do a manual impression recording
+    public boolean doRecordImpression() {
+        return shouldRecordImpression;
+    }
+
+    public void setShouldRecordImpression(boolean shouldRecordImpression) {
+        this.shouldRecordImpression = shouldRecordImpression;
+    }
+
+    public void setShouldRotate(boolean shouldRotate) {
+        this.shouldRotate = shouldRotate;
+    }
+
+    public void setShouldDisplay(boolean shouldDisplay) {
+        this.shouldDisplay = shouldDisplay;
+    }
+
+    public boolean shouldRecordImpression() {
+        return shouldRecordImpression;
+    }
+
+    public boolean shouldRotate() {
+        return shouldRotate;
+    }
+
+    public boolean shouldDisplay() {
+        return shouldDisplay;
+    }
 }

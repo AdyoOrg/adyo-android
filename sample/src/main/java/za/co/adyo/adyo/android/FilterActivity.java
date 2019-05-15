@@ -21,6 +21,9 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
     private AdyoZoneView adyoZoneView;
 
     private PlacementRequestParams params;
+    private boolean displayAd;
+    private boolean recordImpression;
+    private boolean rotate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +72,17 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
         }
         else {
             params = savedInstanceState.getParcelable("params");
-            onFilter(params);
+            displayAd = savedInstanceState.getBoolean("displayAd");
+            recordImpression = savedInstanceState.getBoolean("recordImpression");
+            rotate = savedInstanceState.getBoolean("rotate");
+            onFilter(params, displayAd, recordImpression, rotate);
         }
 
 
     }
 
     @Override
-    public void onFilter(PlacementRequestParams params) {
+    public void onFilter(PlacementRequestParams params, boolean displayAd, boolean recordImpression, boolean rotate) {
 
         this.params = params;
 
@@ -86,10 +92,14 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
         adyoZoneView.getLayoutParams().width = params.getWidth();
         adyoZoneView.getLayoutParams().height = params.getHeight();
         adyoZoneView.requestLayout();
+        adyoZoneView.setShouldDisplay(displayAd);
+        adyoZoneView.setShouldRecordImpression(recordImpression);
+        adyoZoneView.setShouldRotate(rotate);
 
         params.setWidth(null);
         params.setHeight(null);
 
+        adyoZoneView.clearView();
         adyoZoneView.requestPlacement(this, params, new PlacementRequestListener() {
             @Override
             public void onRequestComplete(boolean isFound, Placement placement) {
@@ -102,6 +112,10 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
 
                     adyoZoneView.clearView();
                 }
+//                else
+//                {
+//                    adyoZoneView.setShouldDisplay(placement.getMetadata() == null);
+//                }
 
 
             }
@@ -117,6 +131,9 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable("params", params);
+        outState.putBoolean("displayAd", displayAd);
+        outState.putBoolean("recordImpression", recordImpression);
+        outState.putBoolean("rotate", rotate);
         super.onSaveInstanceState(outState);
     }
 
