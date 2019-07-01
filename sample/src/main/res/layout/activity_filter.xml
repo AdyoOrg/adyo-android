@@ -20,8 +20,8 @@
         <za.co.adyo.android.views.AdyoZoneView
             android:id="@+id/adyo_zone_view"
             style="@style/AdyoWebView"
-            android:layout_width="300dp"
-            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
             android:background="@android:color/white"/>
 
         <Button

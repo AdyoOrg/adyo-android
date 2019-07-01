@@ -17,6 +17,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import za.co.adyo.android.AdyoZoneActivity;
 import za.co.adyo.android.R;
@@ -207,9 +208,15 @@ public class Adyo {
             }
             else
             {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(placement.getClickUrl()));
-                activity.startActivity(i);
+                try {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(placement.getClickUrl()));
+                    activity.startActivity(i);
+                }
+                catch (Exception e)
+                {
+                    Toast.makeText(activity, "No app found to handle this intent. Please download a browser app.", Toast.LENGTH_LONG).show();
+                }
 
             }
             Log.d("ADYO", "Placement click recorded");

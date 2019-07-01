@@ -65,7 +65,6 @@ public class FilterFragment extends BottomSheetDialogFragment {
     private Button filterButton;
     private Button resetButton;
 
-    private float scale;
     private PlacementRequestParams params;
     private TextWatcher textWatcher;
 
@@ -98,7 +97,6 @@ public class FilterFragment extends BottomSheetDialogFragment {
         View contentView = View.inflate(getContext(), R.layout.fragment_filter, null);
         dialog.setContentView(contentView);
 
-        scale = getContext().getResources().getDisplayMetrics().density;
 
         networkIdEdit = contentView.findViewById(R.id.network_id_edit);
         zoneIdEdit = contentView.findViewById(R.id.zone_id_edit);
@@ -164,8 +162,8 @@ public class FilterFragment extends BottomSheetDialogFragment {
             String joined = TextUtils.join(",", params.getKeywords());
             keywordsEdit.setText(joined);
 
-            int width = Math.round(params.getWidth() / scale - 0.5f);
-            int height = Math.round(params.getHeight() / scale - 0.5f);
+            int width = params.getWidth() ;
+            int height = params.getHeight();
 
             widthEdit.setText(String.valueOf(width));
             heightEdit.setText(String.valueOf(height));
@@ -202,28 +200,28 @@ public class FilterFragment extends BottomSheetDialogFragment {
                     keywords = keywordsList.toArray(new String[keywordsList.size()]);
                 }
 
-                int width;
-                int height;
+                int width = Integer.parseInt(widthEdit.getText().toString());
+                int height = Integer.parseInt(heightEdit.getText().toString());
                 long networkId;
                 long zoneId;
 
-                try {
-
-                    width = Integer.valueOf(widthEdit.getText().toString());
-                    width = (int) (width * scale + 0.5f);
-                } catch (Exception e) {
-                    width = Resources.getSystem().getDisplayMetrics().widthPixels;
-
-                }
-
-
-                try {
-                    height = Math.min(Integer.parseInt(heightEdit.getText().toString()), 400);
-                    height = (int) (height * scale + 0.5f);
-
-                } catch (Exception e) {
-                    height = 400;
-                }
+//                try {
+//
+//                    width = Integer.valueOf(widthEdit.getText().toString());
+//                    width = (int) (width * scale + 0.5f);
+//                } catch (Exception e) {
+//                    width = Resources.getSystem().getDisplayMetrics().widthPixels;
+//
+//                }
+//
+//
+//                try {
+//                    height = Math.min(Integer.parseInt(heightEdit.getText().toString()), 400);
+//                    height = (int) (height * scale + 0.5f);
+//
+//                } catch (Exception e) {
+//                    height = 400;
+//                }
 
                 try {
 
@@ -306,8 +304,8 @@ public class FilterFragment extends BottomSheetDialogFragment {
 
 
     private void resetFilters() {
-        int widthPixels = 300;
-        int heightPixels = 250;
+        int widthPixels = 200;
+        int heightPixels = 200;
 
 //        networkIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_network_id)));
 //        zoneIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_zone_id_1)));
@@ -317,10 +315,10 @@ public class FilterFragment extends BottomSheetDialogFragment {
 //        heightEdit.setText(String.valueOf(heightPixels));
 
 
-        networkIdEdit.setText("3");
-        zoneIdEdit.setText("7");
+        networkIdEdit.setText("2");
+        zoneIdEdit.setText("197");
         userIdEdit.setText("");
-        keywordsEdit.setText("school_1135");
+        keywordsEdit.setText("d6_school_436");
         widthEdit.setText(String.valueOf(widthPixels));
         heightEdit.setText(String.valueOf(heightPixels));
 

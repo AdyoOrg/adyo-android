@@ -271,6 +271,8 @@ public class AdyoZoneView extends FrameLayout {
         removeAllViews();
         addView(webView);
 
+        webView.setInitialScale(1);
+
         webView.setBackgroundColor(0x01000000);
 
         if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
@@ -281,7 +283,7 @@ public class AdyoZoneView extends FrameLayout {
                     "<html>" +
                     "<head>" +
                     "<meta charset=\"UTF-8\">" +
-                    "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
+                    "<meta name=\"viewport\" content=\"initial-scale=" + 1.0 + "\"/>" +
                     "<style type=\"text/css\">" +
                     "html{margin:0;padding:0;}" +
                     "body {" +
@@ -318,7 +320,7 @@ public class AdyoZoneView extends FrameLayout {
             String url = "<!DOCTYPE html>" +
                     "<html>" +
                     "<head>" +
-                    "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>" +
+                    "<meta name=\"viewport\" content=\"initial-scale=" + 1.0 + "\"/>" +
                     "<meta charset=\"UTF-8\">" +
                     "<style type=\"text/css\">" +
                     "html {margin:0; padding:0; height:100%}" +
@@ -350,17 +352,17 @@ public class AdyoZoneView extends FrameLayout {
             String url = "<!DOCTYPE html>" +
                     "<html>" +
                     "<head>" +
-                    "<meta name=\"viewport\" content=\"initial-scale=1.0\" />" +
+                    "<meta name=\"viewport\" content=\"initial-scale=" + 1.0 + "\"/>" +
                     "<meta charset=\"UTF-8\">" +
                     "<style>" +
                     "html {margin:0; padding:0; height:100%}" +
                     "body {background: none; margin: 0; padding: 0; height:100%}" +
-                    "iframe {" +
-                    "background: none;" +
-                    "-webkit-touch-callout: none !important;" +
-                    "-webkit-user-select: none !important;" +
-                    "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;" +
-                    "}" +
+//                    "iframe {" +
+//                    "background: none;" +
+//                    "-webkit-touch-callout: none !important;" +
+//                    "-webkit-user-select: none !important;" +
+//                    "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;" +
+//                    "}" +
                     "</style>" +
                     "</head>" +
                     "<body id=\"page\">" +
@@ -497,18 +499,30 @@ public class AdyoZoneView extends FrameLayout {
         //Save the width and height to be used as parameters for the getPlacement request with non
         //are specified
 
-       // float density  = getResources().getDisplayMetrics().density;
+        int density = (context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 
-//        width = Math.round(MeasureSpec.getSize(widthMeasureSpec)/density);
-//        height = Math.round(MeasureSpec.getSize(heightMeasureSpec)/density);
-        width = MeasureSpec.getSize(widthMeasureSpec);
-        height = MeasureSpec.getSize(heightMeasureSpec);
+        width = convertPixelsToDp(MeasureSpec.getSize(widthMeasureSpec), context) * density;
+        height = convertPixelsToDp(MeasureSpec.getSize(heightMeasureSpec), context) * density;
+
+//        width = MeasureSpec.getSize(widthMeasureSpec)  ;
+//        height = MeasureSpec.getSize(heightMeasureSpec);
 
         if (doRequest) {
             doRequest = false;
             requestHandler.post(requestRunnable);
         }
 
+    }
+
+    /**
+     * This method converts device specific pixels to density independent pixels.
+     *
+     * @param px A value in px (pixels) unit. Which we need to convert into db
+     * @param context Context to get resources and device specific display metrics
+     * @return A float value to represent dp equivalent to px value
+     */
+    public static int convertPixelsToDp(int px, Context context){
+        return px / (context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
 
