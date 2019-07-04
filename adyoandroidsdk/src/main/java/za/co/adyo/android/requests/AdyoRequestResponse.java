@@ -50,8 +50,9 @@ public class AdyoRequestResponse {
                     jsonObject.has("third_party_impression_url") && !jsonObject.isNull("third_party_impression_url") ? jsonObject.getString("third_party_impression_url") : null,
                     jsonObject.has("refresh_after") ? jsonObject.getInt("refresh_after") : 0,
                     jsonObject.has("app_target") ? jsonObject.getString("app_target") : "default",
-                    jsonObject.has("metadata") && !jsonObject.isNull("metadata") ? jsonObject.getJSONObject("metadata") : null
-
+                    jsonObject.has("metadata") && !jsonObject.isNull("metadata") ? jsonObject.getJSONObject("metadata") : null,
+                    jsonObject.has("width") ? jsonObject.getInt("width") : 0,
+                    jsonObject.has("height") ? jsonObject.getInt("height") : 0
                     );
 
             placementList.add(placement);

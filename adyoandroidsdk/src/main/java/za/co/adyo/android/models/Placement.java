@@ -34,10 +34,12 @@ public class Placement {
     private String thirdPartyImpressionUrl;
     private int refreshAfter;
     private int appTarget;
+    private int width;
+    private int height;
     private JSONObject metadata;
 
     public Placement(@Nullable String creativeUrl, @Nullable String htmlUrl, String creativeType, @Nullable String htmlDomain, String impressionUrl,
-                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget, JSONObject metadata) {
+                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget, JSONObject metadata, int width, int height) {
 
         this.creativeUrl = creativeUrl;
         this.creativeHtml = htmlUrl;
@@ -63,6 +65,8 @@ public class Placement {
         this.thirdPartyImpressionUrl = thirdPartyImpressionUrl;
         this.refreshAfter = refreshAfter;
         this.metadata = metadata;
+        this.width = width;
+        this.height = height;
 
         // Used to determine how the click url will be displayed
         switch (appTarget) {
@@ -209,5 +213,21 @@ public class Placement {
 
     public void setMetadata(JSONObject metadata) {
         this.metadata = metadata;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 }

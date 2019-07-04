@@ -111,8 +111,8 @@ public class FilterFragment extends BottomSheetDialogFragment {
         rotateSwitch = contentView.findViewById(R.id.rotate_switch);
 
         displaySwitch.setChecked(true);
-        impressionSwitch.setChecked(true);
-        rotateSwitch.setChecked(true);
+        impressionSwitch.setChecked(false);
+        rotateSwitch.setChecked(false);
 
         CKWContainer = contentView.findViewById(R.id.ckw_container);
 
@@ -304,8 +304,8 @@ public class FilterFragment extends BottomSheetDialogFragment {
 
 
     private void resetFilters() {
-        int widthPixels = 200;
-        int heightPixels = 200;
+        int widthPixels = 400;
+        int heightPixels = 400;
 
 //        networkIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_network_id)));
 //        zoneIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_zone_id_1)));

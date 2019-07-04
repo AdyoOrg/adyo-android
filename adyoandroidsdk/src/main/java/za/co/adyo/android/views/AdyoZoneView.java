@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,12 +19,15 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Random;
 import java.util.UUID;
 
@@ -270,8 +274,7 @@ public class AdyoZoneView extends FrameLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT));
         removeAllViews();
         addView(webView);
-
-        webView.setInitialScale(1);
+        setLayoutParams(new LinearLayout.LayoutParams(width, height));
 
         webView.setBackgroundColor(0x01000000);
 
@@ -349,28 +352,32 @@ public class AdyoZoneView extends FrameLayout {
 
         } else if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_TAG) {
 
-            String url = "<!DOCTYPE html>" +
-                    "<html>" +
-                    "<head>" +
-                    "<meta name=\"viewport\" content=\"initial-scale=" + 1.0 + "\"/>" +
-                    "<meta charset=\"UTF-8\">" +
-                    "<style>" +
-                    "html {margin:0; padding:0; height:100%}" +
-                    "body {background: none; margin: 0; padding: 0; height:100%}" +
-//                    "iframe {" +
-//                    "background: none;" +
-//                    "-webkit-touch-callout: none !important;" +
-//                    "-webkit-user-select: none !important;" +
-//                    "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;" +
-//                    "}" +
-                    "</style>" +
-                    "</head>" +
-                    "<body id=\"page\">" +
-                    currentPlacement.getCreativeHtml() +
+            //Get the aspect ratio of the webview
+            double ratio = width/(height * 1.0);
+            double calHeight = currentPlacement.getWidth() / ratio;
+
+            String url =  "<!DOCTYPE html>" +
+                        "<html class=\"main\">" +
+                        "<head>" +
+                        "<meta name=\"viewport\" content=\"initial-scale=" + 1.0 + "\"/>" +
+                        "<meta charset=\"UTF-8\">" +
+                        "<style type=\"text/css\">" +
+                        "html.main {margin:0; padding:0; height:" + height +"px;}" +
+                        "body { margin: 0; padding: 0; height:" + height +"px;}" +
+                        ".outer-div {position: relative;" +
+                    "     height:" +  calHeight  + "px; width:100%;" +
+                        "</style>" +
+                        "</head>" +
+                        "<body>" +
+
+                        "<div class=\"outer-div\">" +
+                            currentPlacement.getCreativeHtml() +
+                        "</div>" +
+
                     "</body></html>";
 
-
             webView.getSettings().setJavaScriptEnabled(true);
+            webView.setInitialScale(1);
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
             webView.setVerticalScrollBarEnabled(false);
