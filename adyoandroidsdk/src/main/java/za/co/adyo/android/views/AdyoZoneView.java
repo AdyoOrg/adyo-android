@@ -26,8 +26,6 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Random;
 import java.util.UUID;
 
@@ -193,7 +191,6 @@ public class AdyoZoneView extends FrameLayout {
      */
     public void requestPlacement(final Activity activity, final PlacementRequestParams params, @Nullable final PlacementRequestListener placementRequestListener) {
 
-
         currentParams = params;
 
         if (currentParams.getCreativeType() == null || currentParams.getCreativeType().length == 0)
@@ -274,7 +271,6 @@ public class AdyoZoneView extends FrameLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT));
         removeAllViews();
         addView(webView);
-        setLayoutParams(new LinearLayout.LayoutParams(width, height));
 
         webView.setBackgroundColor(0x01000000);
 
@@ -365,15 +361,13 @@ public class AdyoZoneView extends FrameLayout {
                         "html.main {margin:0; padding:0; height:" + height +"px;}" +
                         "body { margin: 0; padding: 0; height:" + height +"px;}" +
                         ".outer-div {position: relative;" +
-                    "     height:" +  calHeight  + "px; width:100%;" +
+                        "height:" +  calHeight  + "px; width:100%;" +
                         "</style>" +
                         "</head>" +
                         "<body>" +
-
                         "<div class=\"outer-div\">" +
                             currentPlacement.getCreativeHtml() +
                         "</div>" +
-
                     "</body></html>";
 
             webView.getSettings().setJavaScriptEnabled(true);
