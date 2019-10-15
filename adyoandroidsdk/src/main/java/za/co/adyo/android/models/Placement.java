@@ -2,6 +2,7 @@ package za.co.adyo.android.models;
 
 import android.support.annotation.Nullable;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -37,9 +38,10 @@ public class Placement {
     private int width;
     private int height;
     private JSONObject metadata;
+    private JSONArray matchedKeywords;
 
     public Placement(@Nullable String creativeUrl, @Nullable String htmlUrl, String creativeType, @Nullable String htmlDomain, String impressionUrl,
-                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget, JSONObject metadata, int width, int height) {
+                     @Nullable String clickUrl, @Nullable String thirdPartyImpressionUrl, int refreshAfter, String appTarget, JSONObject metadata, int width, int height, JSONArray matchedKeywords) {
 
         this.creativeUrl = creativeUrl;
         this.creativeHtml = htmlUrl;
@@ -65,6 +67,7 @@ public class Placement {
         this.thirdPartyImpressionUrl = thirdPartyImpressionUrl;
         this.refreshAfter = refreshAfter;
         this.metadata = metadata;
+        this.matchedKeywords = matchedKeywords;
         this.width = width;
         this.height = height;
 
@@ -229,5 +232,13 @@ public class Placement {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public JSONArray getMatchedKeywords() {
+        return matchedKeywords;
+    }
+
+    public void setMatchedKeywords(JSONArray matchedKeywords) {
+        this.matchedKeywords = matchedKeywords;
     }
 }

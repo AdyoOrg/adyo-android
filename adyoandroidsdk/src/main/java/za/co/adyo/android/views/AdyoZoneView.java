@@ -62,9 +62,23 @@ public class AdyoZoneView extends FrameLayout {
     private PlacementRequestParams[] availableParams = new PlacementRequestParams[]{};
 
     private String id;
-    private boolean shouldRecordImpression = true;
-    private boolean shouldRotate = true;
-    private boolean shouldDisplay = true;
+    private AdyoZoneViewListener listener = new AdyoZoneViewListener() {
+        @Override
+        public boolean shouldRecordImpression() {
+            return true;
+        }
+
+        @Override
+        public boolean shouldRotate() {
+            return true;
+        }
+
+        @Override
+        public boolean shouldDisplay() {
+            return true;
+        }
+    };
+
 
 
     public AdyoZoneView(Context context) {
@@ -233,7 +247,7 @@ public class AdyoZoneView extends FrameLayout {
                     if (isFound) {
                         currentPlacement = placement;
                         //Check if the ad should be loaded into the webview
-                        if(shouldDisplay) {
+                        if(listener.shouldDisplay()) {
                             loadPlacement();
                         }
                         else
@@ -483,13 +497,13 @@ public class AdyoZoneView extends FrameLayout {
 
         //Log third party impression
 
-        if(shouldRecordImpression)
+        if(listener.shouldRecordImpression())
             Adyo.recordImpression(context, currentPlacement, null);
 
 
         //If we have gotten a placement back from the call and it has a refresh_after property greater than 0
         // we will do the call again in x seconds
-        if(shouldRotate)
+        if(listener.shouldRotate())
             refreshPlacement();
     }
 
@@ -540,7 +554,7 @@ public class AdyoZoneView extends FrameLayout {
     public void setPausePlacement(boolean isPaused) {
 
         if (!isPaused && isPaused != this.isPaused)
-            if(shouldRotate)
+            if(listener.shouldRotate())
                 refreshPlacement();
 
         this.isPaused = isPaused;
@@ -637,32 +651,16 @@ public class AdyoZoneView extends FrameLayout {
         return val.intValue();
     }
 
-    //Do a manual impression recording
-    public boolean doRecordImpression() {
-        return shouldRecordImpression;
+
+    public void setAdyoZoneViewListener(AdyoZoneViewListener listener) {
+        this.listener = listener;
     }
 
-    public void setShouldRecordImpression(boolean shouldRecordImpression) {
-        this.shouldRecordImpression = shouldRecordImpression;
-    }
+    public interface AdyoZoneViewListener {
 
-    public void setShouldRotate(boolean shouldRotate) {
-        this.shouldRotate = shouldRotate;
-    }
+        boolean shouldRecordImpression();
+        boolean shouldRotate();
+        boolean shouldDisplay();
 
-    public void setShouldDisplay(boolean shouldDisplay) {
-        this.shouldDisplay = shouldDisplay;
-    }
-
-    public boolean shouldRecordImpression() {
-        return shouldRecordImpression;
-    }
-
-    public boolean shouldRotate() {
-        return shouldRotate;
-    }
-
-    public boolean shouldDisplay() {
-        return shouldDisplay;
     }
 }

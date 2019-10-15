@@ -52,7 +52,8 @@ public class AdyoRequestResponse {
                     jsonObject.has("app_target") ? jsonObject.getString("app_target") : "default",
                     jsonObject.has("metadata") && !jsonObject.isNull("metadata") ? jsonObject.getJSONObject("metadata") : null,
                     jsonObject.has("width") ? jsonObject.getInt("width") : 0,
-                    jsonObject.has("height") ? jsonObject.getInt("height") : 0
+                    jsonObject.has("height") ? jsonObject.getInt("height") : 0,
+                    jsonObject.has("matched_keywords") && !jsonObject.isNull("matched_keywords") ? jsonObject.getJSONArray("matched_keywords") : null
                     );
 
             placementList.add(placement);

@@ -82,7 +82,7 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
     }
 
     @Override
-    public void onFilter(PlacementRequestParams params, boolean displayAd, boolean recordImpression, boolean rotate) {
+    public void onFilter(PlacementRequestParams params, final boolean displayAd, final boolean recordImpression, final boolean rotate) {
 
         this.params = params;
 
@@ -92,9 +92,24 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
         adyoZoneView.getLayoutParams().width = params.getWidth();
         adyoZoneView.getLayoutParams().height = params.getHeight();
         adyoZoneView.requestLayout();
-        adyoZoneView.setShouldDisplay(displayAd);
-        adyoZoneView.setShouldRecordImpression(recordImpression);
-        adyoZoneView.setShouldRotate(rotate);
+
+        adyoZoneView.setAdyoZoneViewListener(new AdyoZoneView.AdyoZoneViewListener() {
+            @Override
+            public boolean shouldRecordImpression() {
+                return recordImpression;
+            }
+
+            @Override
+            public boolean shouldRotate() {
+                return rotate;
+            }
+
+            @Override
+            public boolean shouldDisplay() {
+                return displayAd;
+            }
+        });
+
 
         params.setWidth(null);
         params.setHeight(null);

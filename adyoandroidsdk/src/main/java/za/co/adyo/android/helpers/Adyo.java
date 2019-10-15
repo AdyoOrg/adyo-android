@@ -14,6 +14,7 @@ import android.support.annotation.StyleRes;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -225,21 +226,16 @@ public class Adyo {
     }
 
 
-    public static void showAlertDialog(FragmentManager fm, String url, @StyleRes int theme) {
-
-        AdyoPopupView alertDialog = AdyoPopupView.newInstance(url, theme);
-        alertDialog.show(fm, "fragment_alert");
-    }
-
     public static void showAlertDialog(FragmentManager fm, String url, final Context context) {
-//        AdyoPopupView alertDialog = AdyoPopupView.newInstance(url);
-//        alertDialog.show(fm, "fragment_alert");
-
 
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
         WebView wv = new WebView(context);
         wv.loadUrl(url);
+
+        WebSettings settings = wv.getSettings();
+        settings.setJavaScriptEnabled(true);
+
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

@@ -69,55 +69,56 @@ public class AdyoPopupView extends DialogFragment {
         webView.requestFocus(View.FOCUS_DOWN);
 
         WebSettings settings = webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setUseWideViewPort(true);
-        settings.setSupportZoom(true);
-        settings.setBuiltInZoomControls(false);
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        settings.setDomStorageEnabled(true);
+//        settings.setJavaScriptEnabled(true);
+//        settings.setLoadWithOverviewMode(true);
+//        settings.setUseWideViewPort(true);
+//        settings.setSupportZoom(true);
+//        settings.setBuiltInZoomControls(false);
+//        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+//        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+//        settings.setDomStorageEnabled(true);
+//        settings.setLoadsImagesAutomatically(true);
 
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+//        } else {
+//            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+//        }
 
-        webView.setInitialScale(1);
+      //  webView.setInitialScale(1);
 
-        webView.setWebViewClient(new WebViewClient() {
-
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-
-                String command = "javascript:(function() {" +
-                         "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + "#ffffff" + "\";" +
-                        "})()";
-                view.loadUrl(command);
-
-                super.onPageFinished(view, url);
-            }
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url){
-                // do your handling codes here, which url is the requested url
-                // probably you need to open that url rather than redirect:
-                view.loadUrl(url);
-                return false; // then it is not handled by default action
-            }
-
-            @RequiresApi(Build.VERSION_CODES.N)
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl(request.getUrl().toString());
-                return false; // then it is not handled by default action
-            }
-        });
+//        webView.setWebViewClient(new WebViewClient() {
+//
+//
+//            @Override
+//            public void onPageFinished(WebView view, String url) {
+//
+//                String command = "javascript:(function() {" +
+//                         "document.getElementsByTagName(\"body\")[0].style.backgroundColor = \"" + "#ffffff" + "\";" +
+//                        "})()";
+//                view.loadUrl(command);
+//
+//                super.onPageFinished(view, url);
+//            }
+//
+//            @SuppressWarnings("deprecation")
+//            @Override
+//            public boolean shouldOverrideUrlLoading(WebView view, String url){
+//                // do your handling codes here, which url is the requested url
+//                // probably you need to open that url rather than redirect:
+//                view.loadUrl(url);
+//                return false; // then it is not handled by default action
+//            }
+//
+//            @RequiresApi(Build.VERSION_CODES.N)
+//            @Override
+//            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+//                view.loadUrl(request.getUrl().toString());
+//                return false; // then it is not handled by default action
+//            }
+//        });
 
         webView.loadUrl(url);
 
