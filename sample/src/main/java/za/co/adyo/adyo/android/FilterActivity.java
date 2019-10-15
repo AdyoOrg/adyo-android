@@ -95,17 +95,17 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
 
         adyoZoneView.setAdyoZoneViewListener(new AdyoZoneView.AdyoZoneViewListener() {
             @Override
-            public boolean shouldRecordImpression() {
+            public boolean shouldRecordImpression(Placement placement) {
                 return recordImpression;
             }
 
             @Override
-            public boolean shouldRotate() {
+            public boolean shouldRotate(Placement placement) {
                 return rotate;
             }
 
             @Override
-            public boolean shouldDisplay() {
+            public boolean shouldDisplay(Placement placement) {
                 return displayAd;
             }
         });
