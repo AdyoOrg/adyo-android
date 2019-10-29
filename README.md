@@ -59,7 +59,7 @@ PlacementRequestParams params = new PlacementRequestParams(
                 1,                    // Zone Id (Required)
                 "YPf7G7BXtFCdEn",     // User Id (Nullable)
                 new String[0],        // List of Keywords (Nullable)
-              new String[]{"image"} // List of supported creative types. Can be "image", "rich-media", "tag"(Nullable)
+                new String[]{"image"} // List of supported creative types. Can be "image", "rich-media", "tag"(Nullable)
                 320,                  // Width (Nullable)
                 200,                  // Height (Nullable)
                 new JSONObject());    // Custom Keyword (Nullable)
