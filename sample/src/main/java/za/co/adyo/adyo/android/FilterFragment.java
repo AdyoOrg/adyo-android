@@ -67,6 +67,8 @@ public class FilterFragment extends BottomSheetDialogFragment {
 
     private PlacementRequestParams params;
     private TextWatcher textWatcher;
+    private int heightPixels;
+    private int widthPixels;
 
     public static FilterFragment newInstance() {
 
@@ -155,19 +157,15 @@ public class FilterFragment extends BottomSheetDialogFragment {
             resetFilters();
         } else {
 
+            widthEdit.setText(String.valueOf(widthPixels));
+            heightEdit.setText(String.valueOf(heightPixels));
+
             networkIdEdit.setText(String.valueOf(params.getNetworkId()));
             zoneIdEdit.setText(String.valueOf(params.getZoneId()));
             userIdEdit.setText(String.valueOf(params.getUserId() != null ? params.getUserId() : ""));
 
             String joined = TextUtils.join(",", params.getKeywords());
             keywordsEdit.setText(joined);
-
-            int width = params.getWidth() ;
-            int height = params.getHeight();
-
-            widthEdit.setText(String.valueOf(width));
-            heightEdit.setText(String.valueOf(height));
-
 
             JSONObject customKeywords = params.getCustomKeywords();
 
@@ -293,9 +291,12 @@ public class FilterFragment extends BottomSheetDialogFragment {
         listener = (FilterActivity) context;
     }
 
-    public void setParams(PlacementRequestParams params) {
+    public void setParams(PlacementRequestParams params, int widthPixels, int heightPixels) {
         this.params = params;
+        this.widthPixels = widthPixels;
+        this.heightPixels = heightPixels;
     }
+
 
     public interface OnFilterListener {
 
@@ -304,21 +305,13 @@ public class FilterFragment extends BottomSheetDialogFragment {
 
 
     private void resetFilters() {
-        int widthPixels = 400;
-        int heightPixels = 400;
+        widthPixels = 400;
+        heightPixels = 400;
 
-//        networkIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_network_id)));
-//        zoneIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_zone_id_1)));
-//        userIdEdit.setText("");
-//        keywordsEdit.setText("");
-//        widthEdit.setText(String.valueOf(widthPixels));
-//        heightEdit.setText(String.valueOf(heightPixels));
-
-
-        networkIdEdit.setText("2");
-        zoneIdEdit.setText("197");
+        networkIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_network_id)));
+        zoneIdEdit.setText(String.valueOf(getResources().getInteger(R.integer.adyo_zone_id_1)));
         userIdEdit.setText("");
-        keywordsEdit.setText("d6_school_436");
+        keywordsEdit.setText("");
         widthEdit.setText(String.valueOf(widthPixels));
         heightEdit.setText(String.valueOf(heightPixels));
 

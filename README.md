@@ -17,7 +17,7 @@ Add this line to your app's `build.gradle` under `dependencies`:
 
 ```groovy
 dependencies {
-  compile 'za.co.adyo:adyoandroidsdk:1.0.19'
+  compile 'za.co.adyo:adyoandroidsdk:1.1.7.12'
 }
 ```
 
@@ -41,7 +41,7 @@ Add the view to your layout:
 In your Activity/Fragment, fetch the view from your xml:
 
 ```java
-AdyoZoneView adyoZoneView = (AdyoZoneView) findViewById(R.id.adyo_zone_view)
+AdyoZoneView adyoZoneView = findViewById(R.id.adyo_zone_view)
 ```
 
 You can also programmatically create and add the `AdyoZoneView` with its default constructor. Please remember to add layout parameters to ensure your view is the right size.
@@ -59,6 +59,7 @@ PlacementRequestParams params = new PlacementRequestParams(
                 1,                    // Zone Id (Required)
                 "YPf7G7BXtFCdEn",     // User Id (Nullable)
                 new String[0],        // List of Keywords (Nullable)
+              new String[]{"image"} // List of supported creative types. Can be "image", "rich-media", "tag"(Nullable)
                 320,                  // Width (Nullable)
                 200,                  // Height (Nullable)
                 new JSONObject());    // Custom Keyword (Nullable)
@@ -91,7 +92,7 @@ For the purpose of this example we will use an Android WebView.
 
 Fetch your `WebView` from your xml:
 ```java
-WebView webView = (WebView) findViewById(R.id.web_view);
+WebView webView = findViewById(R.id.web_view);
 ```
 Next create a list of parameters that we will use to request a placement:
 ```java
@@ -101,6 +102,7 @@ PlacementRequestParams params = new PlacementRequestParams(
                 1,                    // Zone Id (Required)
                 "YPf7G7BXtFCdEn",     // User Id (Nullable)
                 new String[0],        // List of Keywords (Nullable)
+                new String[]{"image"} // List of supported creative types. Can be "image", "rich-media", "tag"(Nullable)
                 320,                  // Width (Nullable)
                 200,                  // Height (Nullable)
                 new JSONObject());    // Custom Keyword (Nullable)
@@ -190,6 +192,7 @@ The parameters consist of the following:
 | `zoneId` | long | Zone id corresponding to the placement. |
 | `userId` | Nullable String | Id of the current user. |
 | `keywords` | Nullable String [] | A list of keywords associated with the placement. |
+|`creativeType`| Nullable String []| List of supported creative types. Can be "image", "rich-media", and/or "tag".|
 | `width` | Nullable Integer | Width of the zone. |
 | `height` | Nullable Integer | Height of the zone. |
 | `customKeywords` | Nullable JSONObject | Key value pairs of custom keywords. |
@@ -203,6 +206,7 @@ A `PlacementRequestParams` can be created as follows:
                 1,                         // Zone Id (Required)
                 "YPf7G7BXtFCdEn",          // User Id (Nullable)
                 new String[0],             // List of Keywords (Nullable)
+                new String[]{"image"}      // List of supported creative types. Can be "image", "rich-media", "tag"(Nullable)
                 null,                      // Width (Nullable)
                 200,                       // Height (Nullable)
                 new JSONObject());         // Custom Keyword (Nullable)
@@ -248,13 +252,19 @@ An object that models a placement and its properties.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `creativeURL` | String | The URL of the ad that will be displayed in the view. |
-| `creativeType` | int | Describes the type of creative. Currently we support the following: `CREATIVE_TYPE_IMAGE = 1`, `CREATIVE_TYPE_RICH_MEDIA = 2` |
+| `creativeUrl` | String | The URL of the ad that will be displayed in the view. |
+| `htmlUrl` | String | The URL of the ad that will be displayed in the view when the creative is of type Rich Media. |
+| `creativeType` | String | Describes the type of creative. Currently we support the following: `image`, `rich-media`, `tag` |
+| `htmlDomain` | String | Used with the htmlUrl when the creative is of type Rich Media |
 | `impressionURL` | String | The URL to be used to record an impression. |
 | `clickURL` | Nullable String  | The URL to be used when the ad is clicked on. |
 | `thirdPartyImpressionURL` | Nullable String | The URL to be used to record a third party impression. |
 | `refreshAfter` | int | The time to wait before refreshing the placement in seconds. |
 | `appTarget` | int | Determines how the click URL will be handled. Currently we support the following: `APP_TARGET_DEFAULT` = External browser, `APP_TARGET_INSIDE` = Inside app, `APP_TARGET_POPUP` = Popup. |
+| `metadata` | JSONObject | Metadata sent through with the placement. |
+| `width` | int | Width of the view. |
+| `height` | int | Height of the view. |
+| `matchedKeywords` | JSONArray | A list of keywords that specify which keywords from the request matched. |
 
 ### AdyoWebViewClient
 
@@ -307,16 +317,6 @@ The project also provides a testing tool for you to input custom parameters to t
 ## Feedback
 
 If you have any feedback please feel free to email us at devops@unitx.co.za.
-
-## Changelog
-
-- v1.0.0 - Initial Release
-- v1.0.1 - Redirect ad clicks to open in an external browser
-- v1.0.2 - Added support for .gif ads
-- v1.0.3 - Minor bug fixes
-- v1.0.4 - Gradle updates
-- v1.0.5 - Custom Keyword support. Handling of Click URL destination
-- v1.0.19 - Minor bug fixes
 
 
 

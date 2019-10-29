@@ -42,7 +42,7 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
             public void onClick(View view) {
 
                 bottomSheetDialogFragment = FilterFragment.newInstance();
-                ((FilterFragment)bottomSheetDialogFragment).setParams(params);
+                ((FilterFragment)bottomSheetDialogFragment).setParams(params, params != null ? params.getWidth() : 400, params != null ? params.getHeight() : 400);
                 bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
 
             }
@@ -111,8 +111,8 @@ public class FilterActivity extends AppCompatActivity implements FilterFragment.
         });
 
 
-        params.setWidth(null);
-        params.setHeight(null);
+//        params.setWidth(null);
+//        params.setHeight(null);
 
         adyoZoneView.clearView();
         adyoZoneView.requestPlacement(this, params, new PlacementRequestListener() {
