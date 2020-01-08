@@ -44,24 +44,36 @@ public abstract class AdyoWebViewClient extends WebViewClient {
     }
 
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        String url=request.getUrl().toString();
 
-//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        if ((placement.getCreativeUrl() != null && !placement.getCreativeUrl().equals(url)) ||
+                (placement.getCreativeHtml() != null && !placement.getCreativeHtml().equals(url))) {
+
+            if(placement.getAppTarget() == Placement.APP_TARGET_DEFAULT) {
+
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(context, Uri.parse(url));
+            }
+            return true;
+        }
+        return false;
+    }
+
 //    @Override
-//    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-//        String url=request.getUrl().toString();
-//
+//    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//        // open in Webview
 //        if ((placement.getCreativeUrl() != null && !placement.getCreativeUrl().equals(url)) ||
 //                (placement.getCreativeHtml() != null && !placement.getCreativeHtml().equals(url))) {
-//
-//            if(placement.getAppTarget() == Placement.APP_TARGET_DEFAULT) {
-//
-//                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-//                CustomTabsIntent customTabsIntent = builder.build();
-//                customTabsIntent.launchUrl(context, Uri.parse(url));
-//            }
-//            return true;
+//            return false;
 //        }
-//        return false;
+//        // open rest of URLS in default browser
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//        context.startActivity(intent);
+//        return true;
 //    }
 
 }
