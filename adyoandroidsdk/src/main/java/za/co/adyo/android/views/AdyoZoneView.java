@@ -276,8 +276,15 @@ public class AdyoZoneView extends FrameLayout {
 
 
     private void loadPlacement() {
+        WebView webView;
 
-        WebView webView = new WebView(context);
+        try {
+            webView = new WebView(context);
+        }
+        catch (Exception e)
+        {
+            webView = new LollipopFixedWebView(context);
+        }
         webView.setFocusable(true);
         webView.setFocusableInTouchMode(true);
         webView.setLayoutParams(new ViewGroup.LayoutParams(
