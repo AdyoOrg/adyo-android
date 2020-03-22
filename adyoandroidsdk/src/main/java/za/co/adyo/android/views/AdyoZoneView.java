@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -12,9 +13,11 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -252,7 +255,7 @@ public class AdyoZoneView extends FrameLayout {
                         }
                         else
                         {
-                           //Call afterCreativeLoaded to handle impression and refreshing
+                            //Call afterCreativeLoaded to handle impression and refreshing
                             afterCreativeLoaded();
 
                         }
@@ -293,7 +296,7 @@ public class AdyoZoneView extends FrameLayout {
         removeAllViews();
         addView(webView);
 
-        webView.setBackgroundColor(0x01000000);
+        webView.setBackgroundColor(Color.TRANSPARENT);
 
         if (currentPlacement.getCreativeType() == Placement.CREATIVE_TYPE_IMAGE) {
 
@@ -374,21 +377,21 @@ public class AdyoZoneView extends FrameLayout {
             double calHeight = currentPlacement.getWidth() / ratio;
 
             String url =  "<!DOCTYPE html>" +
-                        "<html class=\"main\">" +
-                        "<head>" +
-                        "<meta name=\"viewport\" content=\"initial-scale=" + 1.0 + "\"/>" +
-                        "<meta charset=\"UTF-8\">" +
-                        "<style type=\"text/css\">" +
-                        "html.main {margin:0; padding:0; height:" + height +"px;}" +
-                        "body { margin: 0; padding: 0; height:" + height +"px;}" +
-                        ".outer-div {position: relative;" +
-                        "height:" +  calHeight  + "px; width:100%;" +
-                        "</style>" +
-                        "</head>" +
-                        "<body>" +
-                        "<div class=\"outer-div\">" +
-                            currentPlacement.getCreativeHtml() +
-                        "</div>" +
+                    "<html class=\"main\">" +
+                    "<head>" +
+                    "<meta name=\"viewport\" content=\"initial-scale=" + 1.0 + "\"/>" +
+                    "<meta charset=\"UTF-8\">" +
+                    "<style type=\"text/css\">" +
+                    "html.main {margin:0; padding:0; height:" + height +"px;}" +
+                    "body { margin: 0; padding: 0; height:" + height +"px;}" +
+                    ".outer-div {position: relative;" +
+                    "height:" +  calHeight  + "px; width:100%;" +
+                    "</style>" +
+                    "</head>" +
+                    "<body>" +
+                    "<div class=\"outer-div\">" +
+                    currentPlacement.getCreativeHtml() +
+                    "</div>" +
                     "</body></html>";
 
             webView.getSettings().setJavaScriptEnabled(true);
@@ -521,7 +524,12 @@ public class AdyoZoneView extends FrameLayout {
         //Save the width and height to be used as parameters for the getPlacement request with non
         //are specified
 
-        int density = (context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        final WindowManager w = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        final Display d = w.getDefaultDisplay();
+        final DisplayMetrics m = new DisplayMetrics();
+        d.getMetrics(m);
+
+        int density = (m.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 
         width = convertPixelsToDp(MeasureSpec.getSize(widthMeasureSpec), context) * density;
         height = convertPixelsToDp(MeasureSpec.getSize(heightMeasureSpec), context) * density;
@@ -544,7 +552,13 @@ public class AdyoZoneView extends FrameLayout {
      * @return A float value to represent dp equivalent to px value
      */
     public static int convertPixelsToDp(int px, Context context){
-        return px / (context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+
+        final WindowManager w = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        final Display d = w.getDefaultDisplay();
+        final DisplayMetrics m = new DisplayMetrics();
+        d.getMetrics(m);
+
+        return px / (m.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
 
